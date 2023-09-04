@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import Input from "./uı/Input";
 import { useFormik } from "formik";
 import { personFormSchema } from "@/schemas/personFormSchema";
-import conn from "@/lib/dbConntect";
 import axios from "axios";
 function Form() {
-
+  const [persons,setPersons] = useState([])
   //!
   const [checkboxState, setCheckboxState] = useState({
     Woman: false,
@@ -31,14 +30,10 @@ function Form() {
   const handleİsActiveChange = (personStateName, e) => {
     setPersonState((prev) => ({
       ...prev,
-      isActive:
-        personStateName === "isActive" ? e.target.checked : false,
-      isLeftWork:
-        personStateName === "isLeftWork" ? e.target.checked : false,
+      isActive: personStateName === "isActive" ? e.target.checked : false,
+      isLeftWork: personStateName === "isLeftWork" ? e.target.checked : false,
     }));
   };
- 
-  
 
   //!
   const { values, errors, handleChange, handleBlur, handleSubmit, touched } =
@@ -46,7 +41,7 @@ function Form() {
       initialValues: {
         name: "",
         surname: "",
-        phoneNumber: "",
+        phonenumber: "",
         email: "",
         gender: "",
         address: "",
@@ -54,9 +49,9 @@ function Form() {
         day: "",
         mounth: "",
         year: "",
-        isActive:null,
-        isLeftWork:null,
-        profession:""
+        isactive: null,
+        isleftwork: null,
+        profession: "",
       },
       validationSchema: personFormSchema,
       onSubmit: (values) => {
@@ -64,14 +59,12 @@ function Form() {
       },
     });
 
-    // State guncellenmesı tamamlandıgında values.personState degerıne personState degerını atayacagız.
-    useEffect(()=>{
-      values.isActive = personState.isActive;
-      values.isLeftWork = personState.isLeftWork;
-      console.log(values.personState)
-    },[personState])
+  // State guncellenmesı tamamlandıgında values.personState degerıne personState degerını atayacagız.
+  useEffect(() => {
+    values.isactive = personState.isActive;
+    values.isleftwork = personState.isLeftWork;
+  }, [personState]);
 
-    
   const inputs = [
     {
       id: 1,
@@ -94,11 +87,11 @@ function Form() {
     {
       id: 3,
       name: "phoneNumber",
-      type: "number",
-      values: values.phoneNumber,
+      type: "text",
+      values: values.phonenumber,
       placeholder: "Person Phone Number",
-      touched: touched.phoneNumber,
-      errors: errors.phoneNumber,
+      touched: touched.phonenumber,
+      errors: errors.phonenumber,
     },
     {
       id: 4,
@@ -129,20 +122,39 @@ function Form() {
     },
   ];
 
+  
+  // get person data 
+  
+  useEffect(()=>{
+    const getPersons  = async () =>  {
+      try {
+        const res = await axios.get("/api/create")
+        setPersons(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getPersons();
+  },[])
+  
+  console.log(persons);
+
   // post person data
-  const createNewPerson = async () => {
-    const person = {...values}
+  const createNewPerson = async (e) => {
+    e.preventDefault();
+    const person = { ...values };
+    console.log(person)
     try {
-      const response = await axios.post('/api/create', person);
-      if(response.status === 201){
-        console.log("Person basarıyla eklendi")
+      const response = await axios.post("/api/create", person);
+      if (response.status === 201) {
+        console.log("Person basarıyla eklendi");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
   return (
-    <form onSubmit={handleSubmit} className="w-full h-auto flex gap-x-1 ">
+    <div className="w-full h-auto flex gap-x-1 ">
       {/* Form div */}
       <div className="h-auto w-full ">
         <span className="font-bold">Personel Registration Screen</span>
@@ -246,36 +258,34 @@ function Form() {
               <div className="flex flex-col gap-y-3">
                 <p className="text-xs font-bold">Person State</p>
                 <div className="flex gap-x-3">
-                <label htmlFor="isActive" className="flex gap-x-3">
-                  <input
-                    onChange={()=>handleİsActiveChange("isActive", event)}
-                    checked={personState.isActive}
-                    id="isActive"
-                    type="checkbox"
-                  />
-                  <p className="">Active</p>
-                </label>
-                <label htmlFor="isLeftWork" className="flex gap-x-3">
-                  <input
-                    onChange={()=>handleİsActiveChange("isLeftWork",event)}
-                    checked={personState.isLeftWork}
-                    id="isLeftWork"
-                    type="checkbox"
-                  />
-                  <p className="">Left Work</p>
-                </label>
+                  <label htmlFor="isActive" className="flex gap-x-3">
+                    <input
+                      onChange={() => handleİsActiveChange("isActive", event)}
+                      checked={personState.isActive}
+                      id="isActive"
+                      type="checkbox" 
+                    />
+                    <p className="">Active</p>
+                  </label>
+                  <label htmlFor="isLeftWork" className="flex gap-x-3">
+                    <input
+                      onChange={() => handleİsActiveChange("isLeftWork", event)}
+                      checked={personState.isLeftWork}
+                      id="isLeftWork"
+                      type="checkbox"
+                    />
+                    <p className="">Left Work</p>
+                  </label>
                 </div>
-               
               </div>
-              
             </div>
           </div>
           {/* Operations */}
           <div className="w-full h-auto mt-3">
             <div className="w-full h-1/2  flex gap-x-4 items-center justify-center  ">
               <button
-              onClick={createNewPerson}
-                type="submit"
+                onClick={createNewPerson}
+                type="button"
                 className="h-14 w-[120px] text-white bg-black cursor-pointer rounded-[10px] hover:bg-[#EDBB99]"
               >
                 SAVE
@@ -294,7 +304,7 @@ function Form() {
           {/* Operations */}
         </div>
       </div>
-    </form>
+    </div>
   );
 }
 
