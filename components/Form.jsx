@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Input from "./uı/Input";
 import { useFormik } from "formik";
 import { personFormSchema } from "@/schemas/personFormSchema";
-
+import conn from "@/lib/dbConntect";
+import axios from "axios";
 function Form() {
 
   //!
@@ -128,6 +129,18 @@ function Form() {
     },
   ];
 
+  // post person data
+  const createNewPerson = async () => {
+    const person = {...values}
+    try {
+      const response = await axios.post('/api/create', person);
+      if(response.status === 201){
+        console.log("Person basarıyla eklendi")
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <form onSubmit={handleSubmit} className="w-full h-auto flex gap-x-1 ">
       {/* Form div */}
@@ -261,6 +274,7 @@ function Form() {
           <div className="w-full h-auto mt-3">
             <div className="w-full h-1/2  flex gap-x-4 items-center justify-center  ">
               <button
+              onClick={createNewPerson}
                 type="submit"
                 className="h-14 w-[120px] text-white bg-black cursor-pointer rounded-[10px] hover:bg-[#EDBB99]"
               >
