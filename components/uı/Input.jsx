@@ -8,7 +8,7 @@ function Input(props) {
       <label className="relative block cursor-text w-full">
         <input
           type="text"
-          className=" placeholder-[8px] text-sm text-red-600  h-14 w-full peer border outline-none px-4 pt-2 bg-slate-100 "
+          className=" placeholder-[6px] text-xs text-red-600  h-10 w-full peer border outline-none px-4 pt-2 bg-slate-100 "
           required
           {...inputProps}
         ></input>

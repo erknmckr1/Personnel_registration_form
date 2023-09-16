@@ -4,7 +4,7 @@ import Form from "@/components/form";
 
 function Home() {
   return (
-    <div className="container mx-auto h-screen w-full mt-3">
+    <div className="px-10">
       <Form/>
     </div>
   );
