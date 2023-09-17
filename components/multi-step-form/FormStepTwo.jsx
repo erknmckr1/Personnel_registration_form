@@ -55,7 +55,7 @@ export default function FormStepTwo() {
             <label className="py-2 pr-4">
               <input
                 checked={checkboxState.Man}
-                onClick={() => handleCheckboxChange("male", event)}
+                onChange={() => handleCheckboxChange("male", event)}
                 type="checkbox"
                 name="gender"
                 value="male"
@@ -65,7 +65,7 @@ export default function FormStepTwo() {
             <label className="py-2">
               <input
                 checked={checkboxState.Woman}
-                onClick={() => handleCheckboxChange("female", event)}
+                onChange={() => handleCheckboxChange("female", event)}
                 type="checkbox"
                 name="saveAddress"
                 value="female"
