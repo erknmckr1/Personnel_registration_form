@@ -1,28 +1,39 @@
 import React, { useEffect, useState } from "react";
-import Input from "./uı/Input";
-import { useFormik } from "formik";
-import { personFormSchema } from "@/schemas/personFormSchema";
 import axios from "axios";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import FormParent from "./multi-step-form/FormParent";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+
 function Form() {
   const [showForm, setShowForm] = useState(false);
-  // get person data
-  // useEffect(() => {
-  //   const getPersons = async () => {
-  //     try {
-  //       const res = await axios.get("/api/person");
-  //       setPersons(res.data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   getPersons();
-  // }, []);
+  const [persons, setPersons] = useState([]);
+  const [filterText, setFilterText] = useState("");
 
+  //get person data
+  useEffect(() => {
+    const getPersons = async () => {
+      try {
+        const res = await axios.get("/api/person");
+        setPersons(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getPersons();
+  }, []);
+
+  // filtered persons with search ınput
+   const fılteredPersons = persons.filter((person) =>
+     person.first_id.toString().includes(filterText)
+   );
+
+  // filtered persons isActive or isLeftWork
+  const activePerson = persons.filter((person) => person.is_active === true);
+  const isLeftPerson = persons.filter(
+    (person) => person.is_left_work === true && person.is_active === false
+  );
+
+  
   const handleAdd = () => {
     if (showForm === false) {
       setShowForm(true);
@@ -38,16 +49,18 @@ function Form() {
         <div className="w-full h-full flex justify-center gap-x-3">
           {/* operator count screen */}
           <div className="w-1/3  flex justify-center items-center gap-x-8">
-          <div className="flex flex-col gap-y-3 justify-center items-center ">
+            <div className="flex flex-col gap-y-3 justify-center items-center ">
               <span className="text-xl font-semibold">Active Person</span>
-              <div className="w-32 h-32 bg-black text-[35px] flex justify-center items-center text-white drop-shadow-2xl rounded-md">349</div>
+              <div className="w-32 h-32 bg-black text-[35px] flex justify-center items-center text-white drop-shadow-2xl rounded-md">
+                {activePerson && activePerson.length}
+              </div>
             </div>
             <div className="flex flex-col gap-y-3 justify-center items-center ">
               <span className="text-xl font-semibold">Reserved Person</span>
-              <div className="w-32 h-32 bg-black text-[35px] flex justify-center items-center text-white drop-shadow-2xl rounded-md">29</div>
+              <div className="w-32 h-32 bg-black text-[35px] flex justify-center items-center text-white drop-shadow-2xl rounded-md">
+                {isLeftPerson && isLeftPerson.length}
+              </div>
             </div>
-
-           
           </div>
           {/* operatıon buttons... */}
           <div className="w-1/3  gap-x-10  flex items-center justify-center">
@@ -75,7 +88,8 @@ function Form() {
                   label="Search Id"
                   fullWidth
                   autoComplete="given-name"
-                  variant="standard"
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
                 />
               </Grid>
             </div>
@@ -87,27 +101,41 @@ function Form() {
         <table className="table-auto w-full">
           <thead className="bg-black text-white">
             <tr>
-              <th className="px-4 py-2 sticky top-0 bg-black text-white">ID</th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
-                Name
+                Person ID
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
-                Surname
+                Second ID
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
-                Email
+                First Name
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Last Name
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Address (Short)
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Address (Long)
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                City
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                State
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Country
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
                 Phone Number
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Email
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
                 Gender
-              </th>
-              <th className="px-4 py-2 sticky top-0 bg-black text-white">
-                Address
-              </th>
-              <th className="px-4 py-2 sticky top-0 bg-black text-white">
-                City
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
                 Date
@@ -116,14 +144,108 @@ function Form() {
                 Is Active
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Is Admin
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Is Supervisor
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Is Validator
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Is Master
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
                 Is Left Work
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Section
+              </th>
+              <th className="px-4 py-2 sticky top-0 bg-black text-white">
+                Department
               </th>
               <th className="px-4 py-2 sticky top-0 bg-black text-white">
                 Profession
               </th>
             </tr>
           </thead>
-          <tbody> </tbody>
+          <tbody>
+            {fılteredPersons.map((person, index) => (
+              <tr
+                className={`${
+                  person.is_left_work === true ? "bg-red-600 cursor-pointer hover:bg-[#FDEBD0] text-xs" : "bg-[#EAF2F8] cursor-pointer hover:bg-[#FDEBD0] text-xs"
+                }`}
+                key={index}
+              >
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.first_id}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.second_id}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.first_name}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.last_name}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.address_short}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.address_long}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_city}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_state}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_country}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_phonenumber}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_email}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_gender}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_date}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.is_active.toString()}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.is_admin.toString()}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.is_supervisor.toString()}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.is_validator.toString()}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.is_master.toString()}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.is_left_work.toString()}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_section}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_department}
+                </td>
+                <td className=" px-4 py-2 sticky top-0  text-black">
+                  {person.person_profession}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
       {/* form screen */}

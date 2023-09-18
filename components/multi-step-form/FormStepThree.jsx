@@ -2,9 +2,8 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { useUser, user } from "@/context/context";
+import { useUser } from "@/context/context";
+
 export default function FormStepThree() {
   const { user, updateUser } = useUser();
   const { firstId, secondId, date, addresShort, addressLong } = user;
@@ -13,7 +12,6 @@ export default function FormStepThree() {
     updateUser({ ...user, [name]: event.target.value });
   };
 
-  console.log(user);
   return (
     <div className="bg-white p-5">
       <Typography variant="h6" gutterBottom>
@@ -30,6 +28,7 @@ export default function FormStepThree() {
             autoComplete="given-name"
             variant="standard"
             value={firstId}
+            type="number"
             onChange={() => handleChange("firstId", event)}
           />
         </Grid>

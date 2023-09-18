@@ -8,35 +8,58 @@ export default async function handler(req, res) {
     try {
       const {
         person_id,
-        person_name,
-        person_surname,
-        person_email,
-        person_phone,
-        person_profession,
+        second_id,
+        first_name,
+        last_name,
+        address_short,
+        address_long,
         person_city,
-        person_address,
+        person_state,
+        person_country,
+        person_phonenumber,
+        person_email,
         person_gender,
-        person_startdate,
+        person_date,
+        is_active,
+        is_admin,
+        is_supervisor,
+        is_validator,
+        is_master,
+        is_left_work,
+        person_section,
+        person_department,
+        person_profession,
       } = req.body;
+
       const newPerson = await pool.query(
-        `INSERT INTO public.persons(
-          person_id, person_name, person_surname, person_email, person_phone, person_profession, person_city, person_address, person_gender, person_startdate)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
+        `INSERT INTO public.users(
+          first_id, second_id, first_name, last_name, address_short, address_long, person_city, person_state, person_country, person_phonenumber, person_email, person_gender, person_date, is_active, is_admin, is_supervisor, is_validator, is_master, is_left_work, person_section, person_department, person_profession)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22);`,
         [
           person_id,
-          person_name,
-          person_surname,
-          person_email,
-          person_phone,
-          person_profession,
+          second_id,
+          first_name,
+          last_name,
+          address_short,
+          address_long,
           person_city,
-          person_address,
+          person_state,
+          person_country,
+          person_phonenumber,
+          person_email,
           person_gender,
-          person_startdate,
+          person_date,
+          is_active,
+          is_admin,
+          is_supervisor,
+          is_validator,
+          is_master,
+          is_left_work,
+          person_section,
+          person_department,
+          person_profession,
         ]
       );
-
-      // İşlem tamamlandığında yapılması gerekenler buraya eklenebilir
 
       res.status(200).json({ message: "Kişi başarıyla eklendi" });
     } catch (error) {
@@ -45,7 +68,7 @@ export default async function handler(req, res) {
     }
   } else if (method === "GET") {
     try {
-      const allPerson = await pool.query("select * from persons");
+      const allPerson = await pool.query("select * from users");
       res.status(200).json(allPerson.rows);
     } catch (err) {
       console.error("Hata:", err);

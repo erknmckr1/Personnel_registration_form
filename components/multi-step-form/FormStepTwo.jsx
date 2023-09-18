@@ -44,7 +44,7 @@ export default function FormStepTwo() {
     }
   };
 
-  console.log(user);
+
   return (
     <div className="bg-white w-full h-auto p-5 flex flex-col">
       <div className="flex  w-full p-4 ">
