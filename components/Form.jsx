@@ -3,11 +3,15 @@ import axios from "axios";
 import FormParent from "./multi-step-form/FormParent";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-
+import { toast } from "react-toastify";
+import { useUser } from "@/context/context";
 function Form() {
   const [showForm, setShowForm] = useState(false);
   const [persons, setPersons] = useState([]);
   const [filterText, setFilterText] = useState("");
+  const [selectedPersonId, setSelectedPersonId] = useState();
+  const [selectedPerson, setSelectedPerson] = useState();
+  const { user, updateUser } = useUser();
 
   //get person data
   useEffect(() => {
@@ -23,9 +27,9 @@ function Form() {
   }, []);
 
   // filtered persons with search ınput
-   const fılteredPersons = persons.filter((person) =>
-     person.first_id.toString().includes(filterText)
-   );
+  const fılteredPersons = persons.filter((person) =>
+    person.first_id.toString().includes(filterText)
+  );
 
   // filtered persons isActive or isLeftWork
   const activePerson = persons.filter((person) => person.is_active === true);
@@ -33,13 +37,75 @@ function Form() {
     (person) => person.is_left_work === true && person.is_active === false
   );
 
-  
+  // Open modal to add person
   const handleAdd = () => {
     if (showForm === false) {
       setShowForm(true);
     }
   };
 
+  //Assign the selected person's information to a state, if you click on the same person it will deselect it
+  const handlePersonClick = (person) => {
+    if (selectedPersonId && selectedPersonId === person.first_id) {
+      setSelectedPersonId(null);
+    } else {
+      setSelectedPersonId(person.first_id);
+      setSelectedPerson(person);
+    }
+  };
+
+  // delete request
+  const deletePerson = async () => {
+    if (selectedPersonId) {
+      if (confirm(`Delete user with ${selectedPersonId} ? `)) {
+        try {
+          const res = await axios.delete(`/api/person/${selectedPersonId}`);
+          if ((res.status = 200)) {
+            toast.success("Person successfully deleted");
+          }
+        } catch (err) {
+          console.log(err);
+          toast.error("An error occurred while adding Person");
+        }
+      }
+    }
+  };
+
+  //Update to show user form modal
+  const handleUpdate = () => {
+    if (selectedPersonId) {
+      setShowForm(true);
+      const updatedUser = {
+        ...user,
+        firstId: selectedPerson.first_id, 
+        secondId: selectedPerson.secondId, 
+        firstName: selectedPerson.firstName,
+        lastName: selectedPerson.lastName,
+        addresShort: selectedPerson.addresShort,
+        addressLong: selectedPerson.addressLong,
+        city: selectedPerson.city,
+        state: selectedPerson.state,
+        country: selectedPerson.country,
+        phonenumber: selectedPerson.phonenumber,
+        email: selectedPerson.email,
+        gender: selectedPerson.gender,
+        date: selectedPerson.date,
+        isActive: selectedPerson.isActive,
+        isAdmin: selectedPerson.isAdmin,
+        isSupervizor: selectedPerson.isSupervizor,
+        isValidator: selectedPerson.isValidator,
+        isMaster: selectedPerson.isMaster,
+        isleftwork: selectedPerson.isleftwork,
+        section: selectedPerson.section,
+        department: selectedPerson.department,
+        profession: selectedPerson.profession,
+      };
+      updateUser(updatedUser);
+    }
+  };  
+  
+  console.log(user)
+  console.log(selectedPerson)
   return (
     <div className="relative w-full h-screen py-2  gap-x-1  ">
       <div className="h-1/3 w-full">
@@ -70,11 +136,17 @@ function Form() {
             >
               Add
             </button>
-            <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+            <button
+              onClick={handleUpdate}
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+            >
               Update
             </button>
-            <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-              Delete
+            <button
+              onClick={deletePerson}
+              className="ease-in duration-300 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+            >
+              Delete {selectedPersonId && `${selectedPersonId}`}
             </button>
           </div>
           {/* search operator */}
@@ -173,9 +245,14 @@ function Form() {
             {fılteredPersons.map((person, index) => (
               <tr
                 className={`${
-                  person.is_left_work === true ? "bg-red-600 cursor-pointer hover:bg-[#FDEBD0] text-xs" : "bg-[#EAF2F8] cursor-pointer hover:bg-[#FDEBD0] text-xs"
+                  person.first_id === selectedPersonId
+                    ? "bg-blue-500 cursor-pointer hover:bg-blue-600 text-xs text-white"
+                    : person.is_left_work
+                    ? "bg-red-600 cursor-pointer hover:bg-[#FDEBD0] text-xs"
+                    : "bg-[#EAF2F8] cursor-pointer hover:bg-[#FDEBD0] text-xs"
                 }`}
                 key={index}
+                onClick={() => handlePersonClick(person)}
               >
                 <td className=" px-4 py-2 sticky top-0  text-black">
                   {person.first_id}
@@ -249,7 +326,12 @@ function Form() {
         </table>
       </div>
       {/* form screen */}
-      {showForm === true ? <FormParent setShowForm={setShowForm} /> : null}
+      {showForm === true ? (
+        <FormParent
+          selectedPerson={selectedPerson && selectedPerson}
+          setShowForm={setShowForm}
+        />
+      ) : null}
     </div>
   );
 }

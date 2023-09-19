@@ -15,8 +15,9 @@ import { useUser } from "@/context/context";
 import OutsideClickHandler from "react-outside-click-handler";
 
 function FormParent(props) {
-  const { user, updateUser } = useUser();
-  const { setShowForm } = props;
+  const { user } = useUser();
+  const { setShowForm, selectedPerson } = props;
+ 
   const cancelShowForm = () => {
     setShowForm(false);
   };
@@ -27,7 +28,7 @@ function FormParent(props) {
     return false;
   };
 
-  console.log(user);
+
 
   // next form &&  post person data
   const handleNext = async () => {
@@ -61,35 +62,12 @@ function FormParent(props) {
         if (response.status === 200) {
           toast.success("Person başarıyla eklendi");
           console.log("Person başarıyla eklendi");
-          updateUser({
-            firstId: generateRandomNumber(),
-            secondId: decimalTo(decToHex),
-            firstName: "",
-            lastName: "",
-            addresShort: "",
-            addressLong: "",
-            city: "",
-            state: "",
-            country: "",
-            phonenumber: "",
-            email: "",
-            gender: "",
-            date: "",
-            isActive: false,
-            isAdmin: false,
-            isSupervizor: false,
-            isValidator: false,
-            isMaster: false,
-            isleftwork: false,
-            section: "",
-            department: "",
-            profession: "",
-          });
+          cancelShowForm();
+          //resetUser();
         } else {
           toast.error("Person eklenirken bir hata oluştu.");
           console.log("Person eklenirken bir hata oluştu.");
         }
-        console.log(person);
       } catch (err) {
         toast.error("Person eklenirken bir hata oluştu.");
         console.log(err);
@@ -107,12 +85,16 @@ function FormParent(props) {
   const handleReset = () => {
     setActiveStep(0);
   };
-
+  console.log(user)
   return (
     <div className="absolute bg-black bg-opacity-80 top-0 left-0 h-screen w-screen  grid place-content-center">
-      <OutsideClickHandler onOutsideClick={() => setShowForm(false)}>
-        <div className="w-full h-full flex justify-center items-center">
-          <div className="w-1/2 h-auto bg-white rounded-[15px] border border-1-black ">
+      <div className="w-full h-full flex justify-center items-center">
+        <OutsideClickHandler
+          onOutsideClick={() => {
+            setShowForm(false);
+          }}
+        >
+          <div className="w-[750px] h-auto bg-white rounded-[15px] border border-1-black ">
             <div className="w-full h-auto p-5">
               <Box sx={{ width: "100%" }}>
                 <Stepper activeStep={activeStep}>
@@ -159,18 +141,19 @@ function FormParent(props) {
                 )}
               </Box>
             </div>
-            {activeStep === 0 ? <AddressForm /> : null}
-            {activeStep === 1 ? <FormStepTwo /> : null}
-            {activeStep === 2 ? <FormStepThree /> : null}
+            {activeStep === 0 ? <AddressForm selectedPerson={selectedPerson && selectedPerson} /> : null}
+            {activeStep === 1 ? <FormStepTwo selectedPerson={selectedPerson && selectedPerson} /> : null}
+            {activeStep === 2 ? <FormStepThree selectedPerson={selectedPerson && selectedPerson} /> : null}
           </div>
-        </div>
-      </OutsideClickHandler>
+        </OutsideClickHandler>
+      </div>
+
       {/* <button
         onClick={cancelShowForm}
         className="absolute top-10 right-10 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
       >
         Cancel
-      </button> */}
+      </button>  */}
     </div>
   );
 }

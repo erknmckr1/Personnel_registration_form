@@ -44,37 +44,35 @@ export default function FormStepTwo() {
     }
   };
 
-
   return (
     <div className="bg-white w-full h-auto p-5 flex flex-col">
-      <div className="flex  w-full p-4 ">
-        {/* gender */}
-        <div className="w-1/2 flex flex-col">
-          <span className=" font-semibold text-sm py-2">Gender</span>
-          <div className="justify-evenly w-[300px]">
-            <label className="py-2 pr-4">
-              <input
-                checked={checkboxState.Man}
-                onChange={() => handleCheckboxChange("male", event)}
-                type="checkbox"
-                name="gender"
-                value="male"
-              />{" "}
-              Male
-            </label>
-            <label className="py-2">
-              <input
-                checked={checkboxState.Woman}
-                onChange={() => handleCheckboxChange("female", event)}
-                type="checkbox"
-                name="saveAddress"
-                value="female"
-              />{" "}
-              Female
-            </label>
-          </div>
+      {/* gender */}
+      <div className="w-1/2 flex flex-col">
+        <span className=" font-semibold text-sm py-2">Gender</span>
+        <div className="justify-evenly w-[300px]">
+          <label className="p-4">
+            <input
+              checked={checkboxState.Man}
+              onChange={() => handleCheckboxChange("male", event)}
+              type="checkbox"
+              name="gender"
+              value="male"
+            />{" "}
+            Male
+          </label>
+          <label className="p-4">
+            <input
+              checked={checkboxState.Woman}
+              onChange={() => handleCheckboxChange("female", event)}
+              type="checkbox"
+              name="saveAddress"
+              value="female"
+            />{" "}
+            Female
+          </label>
         </div>
       </div>
+
       {/* checkboxes 1  */}
       <div className="w-full flex justify-start">
         <label className="p-4">
@@ -152,16 +150,32 @@ export default function FormStepTwo() {
         {/* section */}
         <div className="flex flex-col">
           <span className="text-sm font-semibold">Section</span>
-          <select onChange={()=>{handleCheck("section",event)}} className="p-4" name="" id="">
+          <select
+            onChange={() => {
+              handleCheck("section", event);
+            }}
+            className="p-4"
+            name=""
+            id=""
+          >
             <option value="select" className="hover:bg-[#FCF3CF] h-6 ">
               Select
             </option>
-            <option value="muhendıs" className="hover:bg-[#FCF3CF] h-6">Muhendis</option>
-            <option value="yonetıcı" className="hover:bg-[#FCF3CF] h-10">Yonetıcı</option>
-            <option value="temızlık gorevlısı" className="hover:bg-[#FCF3CF] h-10">
+            <option value="muhendıs" className="hover:bg-[#FCF3CF] h-6">
+              Muhendis
+            </option>
+            <option value="yonetıcı" className="hover:bg-[#FCF3CF] h-10">
+              Yonetıcı
+            </option>
+            <option
+              value="temızlık gorevlısı"
+              className="hover:bg-[#FCF3CF] h-10"
+            >
               Temızlık Personeli
             </option>
-            <option value="müdür" className="hover:bg-[#FCF3CF] h-10">Müdür</option>
+            <option value="müdür" className="hover:bg-[#FCF3CF] h-10">
+              Müdür
+            </option>
           </select>
         </div>
         {/* department */}
@@ -169,16 +183,13 @@ export default function FormStepTwo() {
           <span className="text-sm font-semibold">Department</span>
           <select
             onChange={() => {
-             handleCheck("department",event)
+              handleCheck("department", event);
             }}
             className="p-4"
             name="department"
             id="department"
           >
-            <option
-              value="select"
-              className="hover:bg-[#FCF3CF] h-6 " 
-            >
+            <option value="select" className="hover:bg-[#FCF3CF] h-6 ">
               Select
             </option>
             <option value="bilgi islem" className="hover:bg-[#FCF3CF] h-6">
@@ -198,15 +209,35 @@ export default function FormStepTwo() {
         {/* profession */}
         <div className="flex flex-col">
           <span className="text-sm font-semibold">Profession</span>
-          <select onChange={()=>{handleCheck("profession",event)}} className="p-4" name="profession" id="profession">
-            <option value="select" className="hover:bg-[#FCF3CF] h-6 " name="" id="">
+          <select
+            onChange={() => {
+              handleCheck("profession", event);
+            }}
+            className="p-4"
+            name="profession"
+            id="profession"
+          >
+            <option
+              value="select"
+              className="hover:bg-[#FCF3CF] h-6 "
+              name=""
+              id=""
+            >
               select
             </option>
-            <option value="uretım muhendısı" className="hover:bg-[#FCF3CF] h-6">Üretim Muhendısı</option>
-            <option value="endustrı muhendısı" className="hover:bg-[#FCF3CF] h-10">
+            <option value="uretım muhendısı" className="hover:bg-[#FCF3CF] h-6">
+              Üretim Muhendısı
+            </option>
+            <option
+              value="endustrı muhendısı"
+              className="hover:bg-[#FCF3CF] h-10"
+            >
               Endustrı Muhendısı
             </option>
-            <option value="bılgısayar muhendısı" className="hover:bg-[#FCF3CF] h-10">
+            <option
+              value="bılgısayar muhendısı"
+              className="hover:bg-[#FCF3CF] h-10"
+            >
               Bılgısayar Muhendisi
             </option>
             <option className="hover:bg-[#FCF3CF] h-10">......</option>

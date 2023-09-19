@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { useUser } from '@/context/context';
 
-export default function AddressForm() {
+export default function AddressForm(props) {
   const {user, updateUser} = useUser();
   const {firstName,lastName,email,city,state,country,phonenumber} = user;
 

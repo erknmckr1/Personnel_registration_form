@@ -47,6 +47,7 @@ const initialUser = {
   profession: "",
 };
 
+
 // context'ı olusturduk
 const UserContext = createContext();
 
@@ -59,8 +60,12 @@ export function UserProvider({ children }) {
     setUser(newUser);
   };
 
+  const resetUser = () => {
+    setUser(initialUser)
+  }
+
   return (
-    <UserContext.Provider value={{ user, updateUser }}>
+    <UserContext.Provider value={{ user, updateUser, resetUser }}>
       {children}
     </UserContext.Provider>
   );
