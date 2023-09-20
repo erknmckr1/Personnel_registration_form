@@ -122,7 +122,6 @@ function FormParent(props) {
     setActiveStep(0);
   };
 
-  console.log(user)
   return (
     <div className="absolute bg-black bg-opacity-80 top-0 left-0 h-screen w-screen  grid place-content-center">
       <div className="w-full h-full flex justify-center items-center">
