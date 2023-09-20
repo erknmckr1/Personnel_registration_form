@@ -17,7 +17,7 @@ import OutsideClickHandler from "react-outside-click-handler";
 function FormParent(props) {
   const { user } = useUser();
   const { setShowForm, selectedPerson } = props;
- 
+
   const cancelShowForm = () => {
     setShowForm(false);
   };
@@ -28,11 +28,9 @@ function FormParent(props) {
     return false;
   };
 
-
-
-  // next form &&  post person data
+  // next form &&  post person data && updated data
   const handleNext = async () => {
-    if (activeStep === steps.length - 1) {
+    if (activeStep === steps.length - 1 && selectedPerson===null) {
       const person = {
         person_id: user.firstId,
         second_id: user.secondId,
@@ -72,6 +70,44 @@ function FormParent(props) {
         toast.error("Person eklenirken bir hata oluştu.");
         console.log(err);
       }
+    } else if (activeStep === steps.length - 1 && selectedPerson !== null) {
+      const person = {
+        person_id: user.firstId,
+        second_id: user.secondId,
+        first_name: user.firstName,
+        last_name: user.lastName,
+        address_short: user.addresShort,
+        address_long: user.addressLong,
+        person_city: user.city,
+        person_state: user.state,
+        person_country: user.country,
+        person_phonenumber: user.phonenumber,
+        person_email: user.email,
+        person_gender: user.gender,
+        person_date: user.date,
+        is_active: user.isActive,
+        is_admin: user.isAdmin,
+        is_supervisor: user.isSupervizor,
+        is_validator: user.isValidator,
+        is_master: user.isMaster,
+        is_left_work: user.isleftwork,
+        person_section: user.section,
+        person_department: user.department,
+        person_profession: user.profession,
+      };
+      try {
+        const response = await axios.put(
+          `api/person/${person.person_id}`,
+          person
+        );
+        if (response.status === 200) {
+          toast.success("Person updated successfully!");
+          console.log("Person updated succesfully.");
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error("Error updating user");
+      }
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
@@ -85,6 +121,7 @@ function FormParent(props) {
   const handleReset = () => {
     setActiveStep(0);
   };
+
   console.log(user)
   return (
     <div className="absolute bg-black bg-opacity-80 top-0 left-0 h-screen w-screen  grid place-content-center">
@@ -141,9 +178,17 @@ function FormParent(props) {
                 )}
               </Box>
             </div>
-            {activeStep === 0 ? <AddressForm selectedPerson={selectedPerson && selectedPerson} /> : null}
-            {activeStep === 1 ? <FormStepTwo selectedPerson={selectedPerson && selectedPerson} /> : null}
-            {activeStep === 2 ? <FormStepThree selectedPerson={selectedPerson && selectedPerson} /> : null}
+            {activeStep === 0 ? (
+              <AddressForm selectedPerson={selectedPerson && selectedPerson} />
+            ) : null}
+            {activeStep === 1 ? (
+              <FormStepTwo selectedPerson={selectedPerson && selectedPerson} />
+            ) : null}
+            {activeStep === 2 ? (
+              <FormStepThree
+                selectedPerson={selectedPerson && selectedPerson}
+              />
+            ) : null}
           </div>
         </OutsideClickHandler>
       </div>

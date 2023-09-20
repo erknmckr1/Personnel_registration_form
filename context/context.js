@@ -10,7 +10,7 @@ function generateRandomNumber() {
 
 const decToHex = generateRandomNumber();
 
-function decimalTo(decimalNumber) {
+const decimalTo = (decimalNumber) => {
   if (typeof decimalNumber !== "number") {
     return null; // Sayı değilse null dönebilirsiniz veya uygun bir hata işleme yapabilirsiniz.
   }
@@ -20,7 +20,6 @@ function decimalTo(decimalNumber) {
 
   return `0x${hexString}`; // 0x ön ekini ekleyerek hex değeri oluşturuyoruz.
 }
-
 
 const initialUser = {
   firstId: generateRandomNumber(),
@@ -65,7 +64,7 @@ export function UserProvider({ children }) {
   }
 
   return (
-    <UserContext.Provider value={{ user, updateUser, resetUser }}>
+    <UserContext.Provider value={{ user, updateUser, resetUser,initialUser }}>
       {children}
     </UserContext.Provider>
   );

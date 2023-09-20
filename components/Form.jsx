@@ -45,14 +45,17 @@ function Form() {
   };
 
   //Assign the selected person's information to a state, if you click on the same person it will deselect it
+  // Tıkladımız personelı state'e atadık 2. tıklamada null a cevırıyoruz buna gore update modalı acılacak.
   const handlePersonClick = (person) => {
     if (selectedPersonId && selectedPersonId === person.first_id) {
       setSelectedPersonId(null);
+      setSelectedPerson(null)
     } else {
       setSelectedPersonId(person.first_id);
       setSelectedPerson(person);
     }
   };
+
 
   // delete request
   const deletePerson = async () => {
@@ -73,39 +76,37 @@ function Form() {
 
   //Update to show user form modal
   const handleUpdate = () => {
-    if (selectedPersonId) {
+    if (selectedPerson) {
       setShowForm(true);
       const updatedUser = {
         ...user,
-        firstId: selectedPerson.first_id, 
-        secondId: selectedPerson.secondId, 
-        firstName: selectedPerson.firstName,
-        lastName: selectedPerson.lastName,
-        addresShort: selectedPerson.addresShort,
-        addressLong: selectedPerson.addressLong,
-        city: selectedPerson.city,
-        state: selectedPerson.state,
-        country: selectedPerson.country,
-        phonenumber: selectedPerson.phonenumber,
-        email: selectedPerson.email,
-        gender: selectedPerson.gender,
-        date: selectedPerson.date,
-        isActive: selectedPerson.isActive,
-        isAdmin: selectedPerson.isAdmin,
-        isSupervizor: selectedPerson.isSupervizor,
-        isValidator: selectedPerson.isValidator,
-        isMaster: selectedPerson.isMaster,
-        isleftwork: selectedPerson.isleftwork,
-        section: selectedPerson.section,
-        department: selectedPerson.department,
-        profession: selectedPerson.profession,
+        firstId: selectedPerson.first_id || user.firstId,
+        secondId: selectedPerson.second_id || user.secondId,
+        firstName: selectedPerson.first_name || user.firstName,
+        lastName: selectedPerson.last_name || user.lastName,
+        addresShort: selectedPerson.address_short || user.addresShort,
+        addressLong: selectedPerson.address_long || user.addressLong,
+        city: selectedPerson.person_city || user.city,
+        state: selectedPerson.person_state || user.state,
+        country: selectedPerson.person_country || user.country,
+        phonenumber: selectedPerson.person_phonenumber || user.phonenumber,
+        email: selectedPerson.person_email || user.email,
+        gender: selectedPerson.person_gender || user.gender,
+        date: selectedPerson.person_date || user.date,
+        isActive: selectedPerson.is_active || user.isActive,
+        isAdmin: selectedPerson.is_admin || user.isAdmin,
+        isSupervizor: selectedPerson.is_supervisor || user.isSupervizor,
+        isValidator: selectedPerson.is_validator || user.isValidator,
+        isMaster: selectedPerson.is_master || user.isMaster,
+        isleftwork: selectedPerson.is_left_work || user.isleftwork,
+        section: selectedPerson.person_section || user.section,
+        department: selectedPerson.person_department || user.department,
+        profession: selectedPerson.person_profession || user.profession,
       };
       updateUser(updatedUser);
     }
-  };  
-  
-  console.log(user)
-  console.log(selectedPerson)
+  };
+
   return (
     <div className="relative w-full h-screen py-2  gap-x-1  ">
       <div className="h-1/3 w-full">
@@ -140,7 +141,7 @@ function Form() {
               onClick={handleUpdate}
               className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
             >
-              Update
+              Update {selectedPersonId && `${selectedPersonId}`}
             </button>
             <button
               onClick={deletePerson}
@@ -291,7 +292,7 @@ function Form() {
                   {person.person_gender}
                 </td>
                 <td className=" px-4 py-2 sticky top-0  text-black">
-                  {person.person_date}
+                  {person.person_date.toString()}
                 </td>
                 <td className=" px-4 py-2 sticky top-0  text-black">
                   {person.is_active.toString()}
