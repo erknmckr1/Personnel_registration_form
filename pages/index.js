@@ -1,9 +1,10 @@
-import React from "react";
-import Home from "./home/Home";
-export default function index() {
+import React from 'react'
+
+function index() {
   return (
-    <>
-      <Home />
-    </>
-  );
+    <div>
+      heheheheeh
+    </div>
+  )
 }
+export default index
