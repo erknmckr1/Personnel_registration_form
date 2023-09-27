@@ -6,107 +6,114 @@ import { useUser } from '@/context/context';
 
 export default function AddressForm(props) {
   const {user, updateUser} = useUser();
-  const {firstName,lastName,email,city,state,country,phonenumber} = user;
+  const {id_dec, id_hex, op_name,op_username,short_name,e_mail,op_password} = user;
 
   const handleChange = (event) => {
     const {name,value} = event.target;
     updateUser({...user,[name]:value})
   }
+
   return (
-    <div className='bg-white p-5'>
+    <div className='bg-white p-5 rounded-xl'>
       <Typography variant="h6" gutterBottom>
       Operator Information Step 1 
       </Typography>
       <Grid container spacing={3}>
+        {/* operator first id */}
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="firstName"
-            name="firstName"
-            label="First name"
+            id="id_dec"
+            name="id_dec"
+            label="id_dec"
             fullWidth
             autoComplete="given-name"
             variant="standard"
-            value={firstName}
+            value={id_dec}
             onChange={()=>handleChange(event)}
           />
         </Grid>
+        {/* opetator second id */}
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="lastName"
-            name="lastName"
-            label="Last name"
+            id="id_hex"
+            name="id_hex"
+            label="id_hex"
             fullWidth
             autoComplete="family-name"
             variant="standard"
-            value={lastName}
-            onChange={handleChange}
+            value={id_hex}
+            onChange={()=>handleChange(event)}
           />
         </Grid>
+        {/* operator status id */}
+        {/* operator name */}
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="email"
-            name="email"
-            label="Email"
-            fullWidth
-            autoComplete="family-name"
-            variant="standard"
-            value={email}
-            onChange={handleChange}
-          />
-        </Grid>
-        
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="city"
-            name="city"
-            label="City"
+            id="op_name"
+            name="op_name"
+            label="op_name"
             fullWidth
             autoComplete="shipping address-level2"
             variant="standard"
-            value={city}
+            value={op_name}
             onChange={handleChange}
           />
         </Grid>
+        {/* operator fullname */}
         <Grid item xs={12} sm={6}>
           <TextField
-            id="state"
-            name="state"
-            label="State/Province/Region"
+            required
+            id="op_username"
+            name="op_username"
+            label="op_username"
             fullWidth
+            autoComplete="shipping address-level2"
             variant="standard"
-            value={state}
+            value={op_username}
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="country"
-            name="country"
-            label="Country"
+            id="short_name"
+            name="short_name"
+            label="short_name"
             fullWidth
-            autoComplete="shipping country"
+            autoComplete="shipping address-level2"
             variant="standard"
-            value={country}
+            value={short_name}
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="phonenumber"
-            name="phonenumber"
-            label="Phone Number"
+            id="e_mail"
+            name="e_mail"
+            label="e_mail"
             fullWidth
-            autoComplete="shipping country"
+            autoComplete="shipping address-level2"
             variant="standard"
-            value={phonenumber}
+            value={e_mail}
             onChange={handleChange}
-            type='number'
+          />
+        </Grid>
+        {/* password */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="op_password"
+            name="op_password"
+            label="op_password"
+            fullWidth
+            autoComplete="shipping address-level2"
+            variant="standard"
+            value={op_password}
+            onChange={handleChange}
           />
         </Grid>
         {/* <Grid item xs={12}>

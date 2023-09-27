@@ -6,7 +6,7 @@ import { useUser } from "@/context/context";
 
 export default function FormStepThree() {
   const { user, updateUser } = useUser();
-  const { firstId, secondId, date, addresShort, addressLong } = user;
+  const { address, izin_bakiye, shift_validator,route,stop_name  } = user;
 
   const handleChange = (name, event) => {
     updateUser({ ...user, [name]: event.target.value });
@@ -18,74 +18,149 @@ export default function FormStepThree() {
         Operator Information Step 3
       </Typography>
       <Grid container spacing={3}>
+        {/* address */}
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="firstId"
-            name="firstId"
-            label="Fırst Id"
+            id="address"
+            name="address"
+            label="address "
             fullWidth
             autoComplete="given-name"
             variant="standard"
-            value={firstId}
-            type="number"
-            onChange={() => handleChange("firstId", event)}
+            value={address}
+            type="text"
+            onChange={() => handleChange("address", event)}
           />
         </Grid>
+        {/* address full */}
+        {/* route */}
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="secondId"
-            name="secondId"
-            label="Second Id"
+            id="route"
+            name="route"
+            label="route"
             fullWidth
             autoComplete="given-name"
             variant="standard"
-            value={secondId}
-            onChange={() => handleChange("secondId", event)}
+            value={route}
+            onChange={() => handleChange("route", event)}
             
           />
         </Grid>
-        <Grid item xs={12}>
+        {/* stop name */}
+        <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="addresShort"
-            name="addresShort"
-            label="Address line 1"
+            id="stop_name"
+            name="stop_name"
+            label="stop_name"
+            fullWidth
+            autoComplete="given-name"
+            variant="standard"
+            value={stop_name}
+            onChange={() => handleChange("stop_name", event)}
+            
+          />
+        </Grid>
+        {/* shift valıdator */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="shift_validator"
+            name="shift_validator"
+            label="shift_validator"
             fullWidth
             autoComplete="shipping address-line1"
             variant="standard"
-            value={addresShort}
-            onChange={() => handleChange("addresShort", event)}
+            value={shift_validator}
+            onChange={() => handleChange("shift_validator", event)}
           />
         </Grid>
-        <Grid item xs={12}>
+        {/* operatar who chooses */}
+        {/* izin bakıye */}
+        <Grid item xs={12} sm={6}>
           <TextField
-            id="address2"
-            name="address2"
-            label="Address line 2"
+            id="izin_bakiye"
+            name="izin_bakiye"
+            label="izin_bakiye"
             fullWidth
             autoComplete="shipping address-line2"
             variant="standard"
-            onChange={() => handleChange("addressLong", event)}
-            value={addressLong}
+            onChange={() => handleChange("izin_bakiye", event)}
+            value={izin_bakiye}
           />
         </Grid>
-        {/* date */}
-        <div className="h-auto w-full p-5">
-          <div className="flex flex-col w-1/2 border-b border-2-black">
-            <span className="font-semibold text-xs">Start Date</span>
-            <input
-              className="h-10  "
-              type="date"
-              name="date"
-              id="date"
-              value={date}
-              onChange={() => handleChange("date", event)}
-            />
-          </div>
+        <div className="w-full h-auto flex justify-between py-4">
+        {/* section */}
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold">Section</span>
+          <select
+            onChange={() => {
+              handleCheck("op_section", event);
+            }}
+            className="p-4"
+            name=""
+            id=""
+          >
+            {sectionData &&
+              sectionData.sections.map((section, index) => (
+                <option
+                  value={section.op_section}
+                  key={index}
+                  className="hover:bg-[#FCF3CF] h-6 "
+                >
+                  {section.op_section}
+                </option>
+              ))}
+          </select>
         </div>
-
+        {/* part */}
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold">Part</span>
+          <select
+            onChange={() => {
+              handleCheck("part", event);
+            }}
+            className="p-4"
+            name="part"
+            id="part"
+          >
+            {sectionData.parts.map((part, index) => (
+              <option
+                className="hover:bg-[#FCF3CF] h-6 "
+                value={part.part}
+                key={index}
+              >
+                {part.part}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* profession */}
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold">Title</span>
+          <select
+            onChange={() => {
+              handleCheck("title", event);
+            }}
+            className="p-4"
+            name="title"
+            id="title"
+          >
+            {sectionData.titles.map((title, index) => (
+              <option
+                className="hover:bg-[#FCF3CF] h-6 "
+                value={title.title}
+                key={index}
+              >
+                {title.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
         {/* <Grid item xs={12}>
           <FormControlLabel
             control={<Checkbox color="secondary" name="saveAddress" value="yes" />}

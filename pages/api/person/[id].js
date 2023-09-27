@@ -10,7 +10,7 @@
       try {
         // Is there a selected person in the database ?
         const checkPerson = await pool.query(
-          "SELECT * FROM public.users WHERE first_id = $1",
+          "SELECT * FROM public.user_table WHERE id_dec = $1",
           [id]
         );
 
@@ -20,7 +20,7 @@
 
         // deleted person
         const deletePerson = await pool.query(
-          "DELETE FROM public.users WHERE first_id = $1",
+          "UPDATE  public.user_table SET is_active = false WHERE id_dec = $1",
           [id]
         );
         res.status(200).json({ message: "Personel successfully deleted" });
@@ -32,80 +32,74 @@
       console.log(req.body)
       try {
         const {
-          first_id,
-          second_id,
-          first_name,
-          last_name,
-          address_short,
-          address_long,
-          person_city,
-          person_state,
-          person_country, 
-          person_phonenumber,
-          person_email,
-          person_gender,
-          person_date,
+          id_dec,
+          id_hex,
+          op_name,
+          op_username,
+          op_password,
+          op_section,
+          part,
+          title,
+          e_mail,
+          gender,
+          short_name,
+          address,
+          route,
+          stop_name,
           is_active,
           is_admin,
-          is_supervisor,
-          is_validator,
-          is_master,
-          is_left_work,
-          person_section,
-          person_department,
-          person_profession,
+          shift_validator,
+          auth2,
+          auth1,
+          izin_bakiye
         } = req.body;
 
         const updatedPerson = await pool.query(
-          `UPDATE public.users 
+          `UPDATE public.user_table
           SET 
-            first_id = $1, 
-            second_id = $2, 
-            first_name = $3, 
-            last_name = $4, 
-            address_short = $5, 
-            address_long = $6, 
-            person_city = $7, 
-            person_state = $8, 
-            person_country = $9, 
-            person_phonenumber = $10, 
-            person_email = $11, 
-            person_gender = $12, 
-            person_date = $13, 
-            is_active = $14, 
-            is_admin = $15, 
-            is_supervisor = $16, 
-            is_validator = $17, 
-            is_master = $18, 
-            is_left_work = $19, 
-            person_section = $20, 
-            person_department = $21, 
-            person_profession = $22
-          WHERE first_id = $23`, // Kişiyi tanımlayan benzersiz bir kimlik alanı burada bulunmalıdır.
+          id_dec = $1,
+          id_hex = $2,
+          op_name = $3,
+          op_username = $4,
+          op_password = $5,
+          op_section = $6,
+          part = $7,
+          title = $8,
+          e_mail = $9,
+          gender = $10,
+          short_name = $11,
+          address = $12,
+          route = $13,
+          stop_name = $14,
+          is_active = $15,
+          is_admin = $16,
+          shift_validator = $17,
+          auth2 = $18,
+          auth1 = $19,
+          izin_bakiye= $20
+          WHERE id_dec = $21`,
           [
-            first_id,
-            second_id,
-            first_name,
-            last_name,
-            address_short,
-            address_long,
-            person_city,
-            person_state,
-            person_country,
-            person_phonenumber,
-            person_email,
-            person_gender,
-            person_date,
+            id_dec,
+            id_hex,
+            op_name,
+            op_username,
+            op_password,
+            op_section,
+            part,
+            title,
+            e_mail,
+            gender,
+            short_name,
+            address,
+            route,
+            stop_name,
             is_active,
             is_admin,
-            is_supervisor,
-            is_validator,
-            is_master,
-            is_left_work,
-            person_section,
-            person_department,
-            person_profession,
-            first_id,
+            shift_validator,
+            auth2,
+            auth1,
+            izin_bakiye,
+            id_dec
           ]
         );
 

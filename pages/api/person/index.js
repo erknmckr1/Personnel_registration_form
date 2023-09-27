@@ -7,57 +7,72 @@ export default async function handler(req, res) {
   if (method === "POST") {
     try {
       const {
-        person_id,
-        second_id,
-        first_name,
-        last_name,
-        address_short,
-        address_long,
-        person_city,
-        person_state,
-        person_country,
-        person_phonenumber,
-        person_email,
-        person_gender,
-        person_date,
-        is_active,
-        is_admin,
-        is_supervisor,
-        is_validator,
-        is_master,
-        is_left_work,
-        person_section,
-        person_department,
-        person_profession,
+          id_dec,
+          id_hex,
+          op_name,
+          op_username,
+          op_password,
+          op_section,
+          part,
+          title,
+          e_mail,
+          gender,
+          short_name,
+          address,
+          route,
+          stop_name,
+          is_active,
+          is_admin,
+          shift_validator,
+          auth2,
+          auth1,
+          izin_bakiye
       } = req.body;
 
       const newPerson = await pool.query(
-        `INSERT INTO public.users(
-          first_id, second_id, first_name, last_name, address_short, address_long, person_city, person_state, person_country, person_phonenumber, person_email, person_gender, person_date, is_active, is_admin, is_supervisor, is_validator, is_master, is_left_work, person_section, person_department, person_profession)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22);`,
-        [
-          person_id,
-          second_id,
-          first_name,
-          last_name,
-          address_short,
-          address_long,
-          person_city,
-          person_state,
-          person_country,
-          person_phonenumber,
-          person_email,
-          person_gender,
-          person_date,
+        `INSERT INTO public.user_table(
+          id_dec,
+          id_hex,
+          op_name,
+          op_username,
+          op_password,
+          op_section,
+          part,
+          title,
+          e_mail,
+          gender,
+          short_name,
+          address,
+          route,
+          stop_name,
           is_active,
           is_admin,
-          is_supervisor,
-          is_validator,
-          is_master,
-          is_left_work,
-          person_section,
-          person_department,
-          person_profession,
+          shift_validator,
+          auth2,
+          auth1,
+          izin_bakiye)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20);`,
+        [
+          id_dec,
+          id_hex,
+          op_name,
+          op_username,
+          op_password,
+          op_section,
+          part,
+          title,
+          e_mail,
+          gender,
+          short_name,
+          address,
+          route,
+          stop_name,
+          is_active,
+          is_admin,
+          shift_validator,
+          auth2,
+          auth1,
+          izin_bakiye
         ]
       );
 
@@ -68,7 +83,9 @@ export default async function handler(req, res) {
     }
   } else if (method === "GET") {
     try {
-      const allPerson = await pool.query("select * from users");
+      const allPerson = await pool.query(
+        "select * from public.user_table"
+      );
       res.status(200).json(allPerson.rows);
     } catch (err) {
       console.error("Hata:", err);

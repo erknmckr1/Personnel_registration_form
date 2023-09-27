@@ -17,9 +17,9 @@ function Form() {
     const getPersons = async () => {
       try {
         const res = await axios.get("/api/person");
-        const unıqId = res.data.map((person) => ({
+        const unıqId = res.data.map((person,index) => ({
           ...person,
-          id: person.first_id,
+          id: person.id_dec,
         }));
         setPersons(unıqId);
       } catch (err) {
@@ -32,29 +32,29 @@ function Form() {
   // filtered persons with search ınput
   const fılteredPersons = persons.filter((person) => {
     const searchableFields = [
-      "first_id",
-      "second_id",
-      "first_name",
-      "last_name",
-      "person_email",
-      "person_section",
-      "person_department",
-      "person_profession",
-      "person_phonenumber",
-      "person_city",
-      "person_state",
-      "person_country",
+      "id_dec",
+      "id_hex",
+      "op_name",
+      "op_username",
+      "e_mail",
+      "op_section",
+      "title",
+      "part",
+      "address",
+      "short_name"
     ];
 
-    return searchableFields.some((key) =>
-    person.is_left_work === false &&  person[key].toString().toLowerCase().includes(filterText.toLowerCase())
-    );
+     return searchableFields.some((key) =>
+      person.is_active &&  person[key].toString().toLowerCase().includes(filterText.toLowerCase())
+     );
   });
+
+ 
 
   // filtered persons isActive or isLeftWork
   const activePerson = persons.filter((person) => person.is_active === true);
   const isLeftPerson = persons.filter(
-    (person) => person.is_left_work === true && person.is_active === false
+    (person) => person.is_active === false
   );
 
   return (
@@ -85,22 +85,22 @@ function Form() {
               <div className="flex flex-col gap-x-10 gap-y-3 justify-center items-center w-full">
                 <div className="">
                   <span className="text-xl font-semibold">
-                    Selected Staff ID :{" "}
+                    Selected Operator ID :{" "}
                   </span>
                   <span className="text-xl font-semibold underline">
-                    {selectedUser && selectedUser.id}
+                    {selectedUser && selectedUser.id_dec}
                   </span>
                 </div>
                 <div>
-                  <span className="text-xl font-semibold">Staff Name : </span>
+                  <span className="text-xl font-semibold">Operator Name : </span>
                   <span className="text-xl font-semibold underline">
-                    {selectedUser && selectedUser.first_name}
+                    {selectedUser && selectedUser.op_name}
                   </span>
                 </div>
                 <div>
                   <span className="text-xl font-semibold">Department : </span>
                   <span className="text-xl font-semibold underline">
-                    {selectedUser && selectedUser.person_department}
+                    {selectedUser && selectedUser.part}
                   </span>
                 </div>
               </div>

@@ -17,7 +17,7 @@ import OutsideClickHandler from "react-outside-click-handler";
 function FormParent(props) {
   const { user } = useUser();
   const { setShowForm } = props;
-
+  
   const cancelShowForm = () => {
     setShowForm(false);
   };
@@ -31,49 +31,34 @@ function FormParent(props) {
   // next form &&  post person data && updated data
   const handleNext = async () => {
     if (activeStep === steps.length - 1) {
-      const person = {
-        person_id: user.firstId,
-        second_id: user.secondId,
-        first_name: user.firstName,
-        last_name: user.lastName,
-        address_short: user.addresShort,
-        address_long: user.addressLong,
-        person_city: user.city,
-        person_state: user.state,
-        person_country: user.country,
-        person_phonenumber: user.phonenumber,
-        person_email: user.email,
-        person_gender: user.gender,
-        person_date: user.date,
-        is_active: user.isActive,
-        is_admin: user.isAdmin,
-        is_supervisor: user.isSupervizor,
-        is_validator: user.isValidator,
-        is_master: user.isMaster,
-        is_left_work: user.isleftwork,
-        person_section: user.section,
-        person_department: user.department,
-        person_profession: user.profession,
-      };
-      try {
-        const response = await axios.post("/api/person", person);
-        if (response.status === 200) {
-          toast.success("Person başarıyla eklendiasdasdsads");
-          console.log("Person başarıyla eklendi");
-          cancelShowForm();
-          //resetUser();
-        } else {
+      // Tüm kullanıcı bilgileri boş olmayanlara sahipse istek at
+      if (
+        Object.entries(user).every(([key, value]) => key === "auth1" || key === "auth2" || value !== "")
+
+      ) {
+        try {
+          const response = await axios.post("/api/person", user);
+          if (response.status === 200) {
+            toast.success("Person başarıyla eklendi");
+            console.log("Person başarıyla eklendi");
+            cancelShowForm();
+            //resetUser();
+          } else {
+            toast.error("Person eklenirken bir hata oluştu.");
+            console.log("Person eklenirken bir hata oluştu.");
+          }
+        } catch (err) {
           toast.error("Person eklenirken bir hata oluştu.");
-          console.log("Person eklenirken bir hata oluştu.");
+          console.log(err);
         }
-      } catch (err) {
-        toast.error("Person eklenirken bir hata oluştu.");
-        console.log(err);
+      } else {
+        toast.error("Lütfen tüm kullanıcı bilgilerini doldurun.");
       }
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
+  
 
   // previos form
   const handleBack = () => {

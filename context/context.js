@@ -19,33 +19,75 @@ const decimalTo = (decimalNumber) => {
   const hexString = decimalNumber.toString(16).toUpperCase();
 
   return `0x${hexString}`; // 0x ön ekini ekleyerek hex değeri oluşturuyoruz.
-}
-
-const initialUser = {
-  firstId: generateRandomNumber(),
-  secondId: decimalTo(decToHex),
-  firstName: "",
-  lastName: "",
-  addresShort: "",
-  addressLong: "",
-  city: "",
-  state: "",
-  country: "",
-  phonenumber: "",
-  email: "",
-  gender: "",
-  date: "",
-  isActive: false,
-  isAdmin: false,
-  isSupervizor: false,
-  isValidator: false,
-  isMaster: false,
-  isleftwork: false,
-  section: "",
-  department: "",
-  profession: "",
 };
 
+// const initialUser = {
+//   firstId: generateRandomNumber(),
+//   secondId: decimalTo(decToHex),
+//   firstName: "",
+//   lastName: "",
+//   addresShort: "",
+//   addressLong: "",
+//   city: "",
+//   state: "",
+//   country: "",
+//   phonenumber: "",
+//   email: "",
+//   gender: "",
+//   date: "",
+//   isActive: false,
+//   isAdmin: false,
+//   isSupervizor: false,
+//   isValidator: false,
+//   isMaster: false,
+//   isleftwork: false,
+//   section: "",
+//   department: "",
+//   profession: "",
+// };
+
+const initialUser = {
+  id_dec: "",
+  id_hex: "",
+  op_name: "",
+  op_username: "",
+  op_password: "",
+  op_section: "",
+  part: "",
+  title: "",
+  e_mail: "",
+  gender: "",
+  short_name: "",
+  address: "",
+  route: "",
+  stop_name: "",
+  is_active: false,
+  is_admin: false,
+  shift_validator: "",
+  auth2: "",
+  auth1: "",
+  izin_bakiye: 0.0,
+};
+
+const authArray = [
+  ,
+  "Kubilay Akkiz",
+  "Burak Onder Ocak",
+  "Harun Yigit",
+  "Sedat Karamanli",
+  "Haluk Yakin",
+  "Berkan Beyaz",
+  "Kudret Yalcin Tekin",
+  "Ugur Atmaca",
+  "Ufuk Tuysuz",
+  "Tomru Hacer Kayaogulları",
+  "Ozcan Celikbas",
+  "Sezin Merter Kuyumcu",
+  "Murat Magzalcioglu",
+  "Kerem Kaya",
+  "Can Robert Geyimli",
+  "Burcu Kirici Cigdem"
+];
 
 // context'ı olusturduk
 const UserContext = createContext();
@@ -60,11 +102,11 @@ export function UserProvider({ children }) {
   };
 
   const resetUser = () => {
-    setUser(initialUser)
-  }
+    setUser(initialUser);
+  };
 
   return (
-    <UserContext.Provider value={{ user, updateUser, resetUser,initialUser }}>
+    <UserContext.Provider value={{ user, updateUser, resetUser, initialUser,authArray }}>
       {children}
     </UserContext.Provider>
   );

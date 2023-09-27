@@ -35,7 +35,6 @@ function FormTable(props) {
     }
   };
   
-  console.log(selectedUser)
   // Add user
   function EditToolbar() {
     const handleClick = () => {
@@ -86,14 +85,15 @@ function FormTable(props) {
           console.log(err);
         }
       }else{
-        toast.error('abc')
+        toast.error('Güncelleyeceğin kullanıcıyı seç. ')
       }
     }
   };
 
   // delete queryyi
   const handleDeleteClick = async (id) => {
-    if (id) {
+    console.log(id)
+    if (id && selectedUser && checkedUser) {
       const confirmation = window.confirm(`Delete user with ${id} ? `);
       if (confirmation) {
         try {
@@ -154,76 +154,6 @@ function FormTable(props) {
       ),
       
     },
-    { field: "first_id", headerName: "Person ID", width: 120 },
-    { field: "second_id", headerName: "Second ID", width: 120 },
-    {
-      field: "first_name",
-      headerName: "First Name",
-      width: 150,
-      editable: true,
-    },
-    { field: "last_name", headerName: "Last Name", width: 150, editable: true },
-    { field: "person_city", headerName: "City", width: 150, editable: true },
-    {
-      field: "person_country",
-      headerName: "Country",
-      width: 150,
-      editable: true,
-    },
-    { field: "person_date", headerName: "Date", width: 150, editable: true },
-    {
-      field: "person_department",
-      headerName: "Department",
-      width: 150,
-      editable: true,
-    },
-    { field: "person_email", headerName: "Email", width: 200, editable: true },
-    {
-      field: "person_gender",
-      headerName: "Gender",
-      width: 120,
-      editable: true,
-    },
-    {
-      field: "person_phonenumber",
-      headerName: "Phone Number",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "person_profession",
-      headerName: "Profession",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "person_section",
-      headerName: "Section",
-      width: 150,
-      editable: true,
-    },
-    { field: "person_state", headerName: "State", width: 150, editable: true },
-    { field: "is_active", headerName: "Active", width: 120, editable: true },
-    { field: "is_admin", headerName: "Admin", width: 120, editable: true },
-    {
-      field: "is_left_work",
-      headerName: "Left Work",
-      width: 120,
-      editable: true,
-    },
-    { field: "is_master", headerName: "Master", width: 120, editable: true },
-    {
-      field: "is_supervisor",
-      headerName: "Supervisor",
-      width: 120,
-      editable: true,
-    },
-    {
-      field: "is_validator",
-      headerName: "Validator",
-      width: 120,
-      editable: true,
-    },
     {
       field: "actions",
       type: "actions",
@@ -270,6 +200,26 @@ function FormTable(props) {
         ];
       },
     },
+    { field: "id_dec", headerName: "Dec Id", width: 100 },
+    { field: "id_hex", headerName: "Hex Id", width: 100 },
+    { field: "op_name", headerName: "Name", width: 100,editable: true },
+    { field: "op_username", headerName: "Username", width: 100,editable: true },
+    { field: "op_password", headerName: "Password", width: 100,editable: true },
+    { field: "op_section", headerName: "Section", width: 100,editable: true },
+    { field: "part", headerName: "Part", width: 100,editable: true },
+    { field: "title", headerName: "Title", width: 150,editable: true },
+    { field: "e_mail", headerName: "E-mail", width: 100,editable: true },
+    { field: "gender", headerName: "Gender", width: 100,editable: true },
+    { field: "short_name", headerName: "Short Name", width: 100,editable: true },
+    { field: "address", headerName: "Address", width: 150,editable: true },
+    { field: "route", headerName: "Route", width: 100,editable: true },
+    { field: "stop_name", headerName: "Stop Name", width: 100,editable: true },
+    { field: "is_active", headerName: "Is Active", width: 100,editable: true },
+    { field: "is_admin", headerName: "Is Admin", width: 100,editable: true },
+    { field: "shift_validator", headerName: "Shift Validator", width: 100,editable: true,editable: true },
+    { field: "auth2", headerName: "Auth2", width: 100,editable: true },
+    { field: "auth1", headerName: "Auth1", width: 100,editable: true },
+    { field: "izin_bakiye", headerName: "Izin Bakiye", width: 100,editable: true },
   ];
 
   return (

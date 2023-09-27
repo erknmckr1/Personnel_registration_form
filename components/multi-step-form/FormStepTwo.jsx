@@ -1,25 +1,20 @@
 import { useUser } from "@/context/context";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function FormStepTwo() {
   const { user, updateUser } = useUser();
-  const {
-    gender,
-    isActive,
-    isAdmin,
-    isSupervizor,
-    isValidator,
-    isMaster,
-    isleftwork,
-    section,
-    department,
-    profession,
-  } = user;
+  const [sectionData, setSectionData] = useState({
+    sections: [],
+    parts: [],
+    titles: [],
+  });
+  const { gender, is_active, is_admin } = user;
   const [checkboxState, setCheckboxState] = useState({
     Woman: false,
     Man: false,
   });
-
+  
   // for gender
   const handleCheckboxChange = (checkboxName, event) => {
     setCheckboxState((prevState) => ({
@@ -34,15 +29,28 @@ export default function FormStepTwo() {
   // for all state
   const handleCheck = (checkboxName, event) => {
     if (
-      checkboxName === "department" ||
-      checkboxName === "section" ||
-      checkboxName === "profession"
+      checkboxName === "op_section" ||
+      checkboxName === "op_part" ||
+      checkboxName === "op_title"
     ) {
       updateUser({ ...user, [checkboxName]: event.target.value });
     } else {
       updateUser({ ...user, [checkboxName]: event.target.checked });
     }
   };
+
+  // veri tabanından sectıonları cek dropdownda listele
+  useEffect(() => {
+    const getSectıon = async () => {
+      try {
+        const response = await axios.get("/api/person/getSection");
+        setSectionData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getSectıon();
+  }, []);
 
   return (
     <div className="bg-white w-full h-auto p-5 flex flex-col">
@@ -77,170 +85,97 @@ export default function FormStepTwo() {
       <div className="w-full flex justify-start">
         <label className="p-4">
           <input
-            checked={isActive}
+            checked={is_active}
             onChange={() => {
-              handleCheck("isActive", event);
+              handleCheck("is_active", event);
             }}
             type="checkbox"
-            name="isActive"
+            name="is_active"
           />{" "}
-          İs Active
-        </label>
-        <label className="p-4">
-          <input
-            checked={isAdmin}
-            onChange={() => {
-              handleCheck("isAdmin", event);
-            }}
-            type="checkbox"
-            name="isAdmin"
-          />{" "}
-          İs Admin
-        </label>
-        <label className="p-4">
-          <input
-            checked={isSupervizor}
-            onChange={() => {
-              handleCheck("isSupervizor", event);
-            }}
-            type="checkbox"
-            name="isSupervizor"
-          />{" "}
-          İs Supervizor
+          is_active
         </label>
       </div>
       {/* checkboxes 2  */}
       <div className="w-full flex justify-start">
         <label className="p-4">
           <input
-            checked={isValidator}
+            checked={is_admin}
             onChange={() => {
-              handleCheck("isValidator", event);
+              handleCheck("is_admin", event);
             }}
             type="checkbox"
-            name="isValidator"
+            name="is_admin"
           />{" "}
-          İs Validator
-        </label>
-        <label className="p-4">
-          <input
-            checked={isMaster}
-            onChange={() => {
-              handleCheck("isMaster", event);
-            }}
-            type="checkbox"
-            name="isMaster"
-          />{" "}
-          İs Master
-        </label>
-        <label className="p-4">
-          <input
-            checked={isleftwork}
-            onChange={() => {
-              handleCheck("isleftwork", event);
-            }}
-            type="checkbox"
-            name="isleftwork"
-          />{" "}
-          İs Left Work
+          is_admin
         </label>
       </div>
-      {/* profession dropdown */}
+      {/* sections dropdown */}
       <div className="w-full h-auto flex justify-between py-4">
         {/* section */}
         <div className="flex flex-col">
           <span className="text-sm font-semibold">Section</span>
           <select
             onChange={() => {
-              handleCheck("section", event);
+              handleCheck("op_section", event);
             }}
             className="p-4"
             name=""
             id=""
           >
-            <option value="select" className="hover:bg-[#FCF3CF] h-6 ">
-              Select
-            </option>
-            <option value="muhendıs" className="hover:bg-[#FCF3CF] h-6">
-              Muhendis
-            </option>
-            <option value="yonetıcı" className="hover:bg-[#FCF3CF] h-10">
-              Yonetıcı
-            </option>
-            <option
-              value="temızlık gorevlısı"
-              className="hover:bg-[#FCF3CF] h-10"
-            >
-              Temızlık Personeli
-            </option>
-            <option value="müdür" className="hover:bg-[#FCF3CF] h-10">
-              Müdür
-            </option>
+            {sectionData &&
+              sectionData.sections.map((section, index) => (
+                <option
+                  value={section.op_section}
+                  key={index}
+                  className="hover:bg-[#FCF3CF] h-6 "
+                >
+                  {section.op_section}
+                </option>
+              ))}
           </select>
         </div>
-        {/* department */}
+        {/* part */}
         <div className="flex flex-col">
-          <span className="text-sm font-semibold">Department</span>
+          <span className="text-sm font-semibold">Part</span>
           <select
             onChange={() => {
-              handleCheck("department", event);
+              handleCheck("part", event);
             }}
             className="p-4"
-            name="department"
-            id="department"
+            name="part"
+            id="part"
           >
-            <option value="select" className="hover:bg-[#FCF3CF] h-6 ">
-              Select
-            </option>
-            <option value="bilgi islem" className="hover:bg-[#FCF3CF] h-6">
-              Bilgi İslem
-            </option>
-            <option value="ıhracat" className="hover:bg-[#FCF3CF] h-10">
-              Ihracat
-            </option>
-            <option value="satıl alma" className="hover:bg-[#FCF3CF] h-10">
-              Satın Alma
-            </option>
-            <option value="montaj" className="hover:bg-[#FCF3CF] h-10">
-              Montaj
-            </option>
+            {sectionData.parts.map((part, index) => (
+              <option
+                className="hover:bg-[#FCF3CF] h-6 "
+                value={part.part}
+                key={index}
+              >
+                {part.part}
+              </option>
+            ))}
           </select>
         </div>
         {/* profession */}
         <div className="flex flex-col">
-          <span className="text-sm font-semibold">Profession</span>
+          <span className="text-sm font-semibold">Title</span>
           <select
             onChange={() => {
-              handleCheck("profession", event);
+              handleCheck("title", event);
             }}
             className="p-4"
-            name="profession"
-            id="profession"
+            name="title"
+            id="title"
           >
-            <option
-              value="select"
-              className="hover:bg-[#FCF3CF] h-6 "
-              name=""
-              id=""
-            >
-              select
-            </option>
-            <option value="uretım muhendısı" className="hover:bg-[#FCF3CF] h-6">
-              Üretim Muhendısı
-            </option>
-            <option
-              value="endustrı muhendısı"
-              className="hover:bg-[#FCF3CF] h-10"
-            >
-              Endustrı Muhendısı
-            </option>
-            <option
-              value="bılgısayar muhendısı"
-              className="hover:bg-[#FCF3CF] h-10"
-            >
-              Bılgısayar Muhendisi
-            </option>
-            <option className="hover:bg-[#FCF3CF] h-10">......</option>
+            {sectionData.titles.map((title, index) => (
+              <option
+                className="hover:bg-[#FCF3CF] h-6 "
+                value={title.title}
+                key={index}
+              >
+                {title.title}
+              </option>
+            ))}
           </select>
         </div>
       </div>
