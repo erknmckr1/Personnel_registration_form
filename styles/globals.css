@@ -16,3 +16,16 @@ body {
   overflow-x: hidden;
   background-color: #F4F6F6;
 }
+
+
+/* grid header css  */
+.css-1iyq7zh-MuiDataGrid-columnHeaders{
+  min-height: 30px !important;
+  max-height: 30px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.popup{
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+}

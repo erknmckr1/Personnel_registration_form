@@ -243,6 +243,7 @@ function FormTable(props) {
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
+        disableSelectionOnClick // Satır seçimini devre dışı bırak
         slots={{
           toolbar: EditToolbar,
         }}
