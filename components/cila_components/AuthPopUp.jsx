@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-function AuthPopUp() {
+
+function AuthPopUp(props) {
+  const [text,setText] = useState("")
+  const {persons} = props;
+  console.log(persons)
+  console.log(text)
+
+  const handleChange = (e) =>{
+    setText(e.target.value)
+  }
   return (
     <div className="w-full h-full absolute grid place-content-center bg-[#EAFAF1] bg-opacity-60 top-0 left-0 z-50 rounded-r-[10px]">
       <div className="w-full h-full flex justify-center items-center">
@@ -21,13 +30,14 @@ function AuthPopUp() {
               <Grid item xs={15} sm={8}>
                 <TextField
                   required
-                  id="barkod"
-                  name="barkod"
+                  id="text"
+                  name="text"
                   label="Barkod"
                   fullWidth
                   autoComplete="given-name"
                   variant="standard"
-                  value=""
+                  value={text}
+                  onChange={handleChange}
                 />
               </Grid>
             </div>

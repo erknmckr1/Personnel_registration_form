@@ -1,50 +1,26 @@
 import React, { createContext, useContext, useState } from "react";
 
 //random id generator
-function generateRandomNumber() {
-  const min = 100000;
-  const max = 999999;
-  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-  return randomNumber;
-}
+// function generateRandomNumber() {
+//   const min = 100000;
+//   const max = 999999;
+//   const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+//   return randomNumber;
+// }
 
-const decToHex = generateRandomNumber();
+// const decToHex = generateRandomNumber();
 
-const decimalTo = (decimalNumber) => {
-  if (typeof decimalNumber !== "number") {
-    return null; // Sayı değilse null dönebilirsiniz veya uygun bir hata işleme yapabilirsiniz.
-  }
+// const decimalTo = (decimalNumber) => {
+//   if (typeof decimalNumber !== "number") {
+//     return null; // Sayı değilse null dönebilirsiniz veya uygun bir hata işleme yapabilirsiniz.
+//   }
 
-  // Decimal sayıyı hex formata dönüştürmek için JavaScript'in toString metodu kullanılabilir.
-  const hexString = decimalNumber.toString(16).toUpperCase();
+//   // Decimal sayıyı hex formata dönüştürmek için JavaScript'in toString metodu kullanılabilir.
+//   const hexString = decimalNumber.toString(16).toUpperCase();
 
-  return `0x${hexString}`; // 0x ön ekini ekleyerek hex değeri oluşturuyoruz.
-};
-
-// const initialUser = {
-//   firstId: generateRandomNumber(),
-//   secondId: decimalTo(decToHex),
-//   firstName: "",
-//   lastName: "",
-//   addresShort: "",
-//   addressLong: "",
-//   city: "",
-//   state: "",
-//   country: "",
-//   phonenumber: "",
-//   email: "",
-//   gender: "",
-//   date: "",
-//   isActive: false,
-//   isAdmin: false,
-//   isSupervizor: false,
-//   isValidator: false,
-//   isMaster: false,
-//   isleftwork: false,
-//   section: "",
-//   department: "",
-//   profession: "",
+//   return `0x${hexString}`; // 0x ön ekini ekleyerek hex değeri oluşturuyoruz.
 // };
+
 
 const initialUser = {
   id_dec: "",
@@ -95,7 +71,7 @@ const UserContext = createContext();
 // Context Provider'ı olusturduk.
 export function UserProvider({ children }) {
   const [user, setUser] = useState(initialUser);
-
+  const [persons,setPersons] = useState([]);
   // Kullanıcı verılerını guncellemek ıcın bır fonksıyon olusturduk.
   const updateUser = (newUser) => {
     setUser(newUser);
@@ -106,7 +82,7 @@ export function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider value={{ user, updateUser, resetUser, initialUser,authArray }}>
+    <UserContext.Provider value={{ user, updateUser, resetUser, initialUser,authArray,persons,setPersons }}>
       {children}
     </UserContext.Provider>
   );

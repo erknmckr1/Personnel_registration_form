@@ -2,7 +2,7 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { useUser } from "@/context/context";
+import { useUser } from "@/context/userContext";
 
 export default function FormStepThree() {
   const { user, updateUser } = useUser();

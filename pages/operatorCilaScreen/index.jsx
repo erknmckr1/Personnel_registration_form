@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import CustomButton from "@/components/cila_components/CustomButton";
 import AuthPopUp from "@/components/cila_components/authPopUp";
+import { useContext } from "react";
+import { CılaContext } from "@/context/cilaContext";
 import {
   GridRowModes,
   DataGrid,
@@ -15,6 +17,7 @@ import StartWorkPopUp from "@/components/cila_components/StartWorkPopUp";
 
 
 function index() {
+  const {persons} = useContext(CılaContext);
   const [time, setTime] = useState(new Date());
   const [isAuth,setİsAuth] = useState(false)
   const buttons = [
@@ -213,7 +216,7 @@ function index() {
               </div>
             </div>
           </div>
-          {isAuth === false ? <AuthPopUp/> : null}
+          {isAuth === false ? <AuthPopUp persons={persons}/> : null}
         </div>
         
         {/* screen 2  */}

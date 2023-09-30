@@ -4,15 +4,15 @@ import FormParent from "@/components/multi-step-form/FormParent";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormTable from "@/components/FormTable";
-
+import { useUser } from "@/context/userContext";
 function Form() {
+  const {persons,setPersons} = useUser();
   const [showForm, setShowForm] = useState(false);
-  const [persons, setPersons] = useState([]);
   const [filterText, setFilterText] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [checkedUser, setCheckedUser] = useState(false);
 
-  // get person data
+  // get person data, datayı cekıp context'deki person state'ıne atadık. Çoğu komponentte kullanacagız.
   useEffect(() => {
     const getPersons = async () => {
       try {
