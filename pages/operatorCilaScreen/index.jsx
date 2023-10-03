@@ -9,9 +9,7 @@ import { CılaContext } from "@/context/cilaContext";
 import {
   GridRowModes,
   DataGrid,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridRowEditStopReasons,
+ 
 } from "@mui/x-data-grid";
 import StartWorkPopUp from "@/components/cila_components/StartWorkPopUp";
 
@@ -19,14 +17,37 @@ import StartWorkPopUp from "@/components/cila_components/StartWorkPopUp";
 function index() {
   const {persons} = useContext(CılaContext);
   const [time, setTime] = useState(new Date());
+  // Oturum acık mı kapalı mı jwt olusturmak yerıne kapalı bır server da oldugumuz ıcın oturumu state ile yonetıyoruz.
   const [isAuth,setİsAuth] = useState(false)
+  // Oturum acan kullanıcının bılgılerını burada tutuyoruz.
+  const [loggedInUser,setLoggedInUser] = useState([])
+  // İşe baslamak ıcın gereklı modal'ı bu state'e gore acıp kapatıyoruz.
+  const [isStartWork,setIsStartWork] = useState(false)
+
+
+  // singOut user refresh to isAuth & LoggedInUser
+  const handleClıckOut = () => {
+    if(window.confirm("Çıkıs yapmak ıstedıgınıze emın mısınız ?")){
+      setLoggedInUser([]);
+      setİsAuth(false)
+      setIsStartWork(false)
+    }
+  }
+
+  // open to start work pop up 
+  const handleOpenStartWork = () => {
+    setIsStartWork(true)
+  }
+  
   const buttons = [
-    { id: 1, title: "Yemek Molası" },
-    { id: 2, title: "Özel Ara" },
-    { id: 3, title: "Yemek Menüsü" },
-    { id: 4, title: "İzin Girişi" },
-    { id: 5, title: "Duyurular" },
-    { id: 6, title: "Ramat" },
+    { id: 0, title: "Çıkış Yap", onClick:handleClıckOut },
+    { id: 1, title: "İşe Başla" , onClick:handleOpenStartWork },
+    { id: 2, title: "Yemek Molası" },
+    { id: 3, title: "Özel Ara" },
+    { id: 4, title: "Yemek Menüsü" },
+    { id: 5, title: "İzin Girişi" },
+    { id: 6, title: "Duyurular" },
+    { id: 7, title: "Ramat" },
   ];
 
   const buttonsRight = [
@@ -72,7 +93,7 @@ function index() {
           {/* left side  */}
           <div className="w-[35%] h-full ">
             {/* left image side */}
-            <div className="w-full h-[30%] bg-white">
+            <div  className="w-full h-[30%] bg-white">
               <div className="w-full h-[85%] p-3">
                 <div className="w-full h-full p-3 border-3-black border">
                   <Image
@@ -84,17 +105,17 @@ function index() {
                 </div>
               </div>
               <div className="w-full h-[15%] flex justify-center items-center text-xl font-semibold">
-                <span>Erkan Mustafa Çakır</span>
+                <span>{loggedInUser && loggedInUser.op_name}</span>
               </div>
             </div>
             {/* left side buttons */}
-            <div className="w-full h-[50%] flex flex-col justify-center items-center gap-y-5 ">
+            <div className="w-full h-[55%] flex flex-col justify-center items-center gap-y-5 ">
               {buttons.map((button) => (
-                <CustomButton key={button.id} title={button.title} />
+                <CustomButton onClick={button.onClick} key={button.id} title={button.title} />
               ))}
             </div>
             {/* left time side */}
-            <div className="w-full h-[20%] bg-white flex items-center justify-center text-[40px] font-bold">
+            <div className="w-full h-[15%] bg-white flex items-center justify-center text-[40px] font-bold">
               <span>{`${hours}:${minutes}`}</span>
             </div>
           </div>
@@ -216,12 +237,12 @@ function index() {
               </div>
             </div>
           </div>
-          {isAuth === false ? <AuthPopUp persons={persons}/> : null}
+          {isAuth === false ? <AuthPopUp setİsAuth={setİsAuth} setLoggedInUser={setLoggedInUser} persons={persons}/> : null}
         </div>
         
         {/* screen 2  */}
         <div className="w-1/2 h-full bg-blue-500 relative">
-                  <StartWorkPopUp/>
+                  {isStartWork === true ? <StartWorkPopUp setIsStartWork={setIsStartWork} loggedInUser={loggedInUser}/> : null}
         </div>
       </div>
       

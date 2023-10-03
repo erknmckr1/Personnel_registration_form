@@ -16,6 +16,7 @@ export const CılaProvider = ({ children }) => {
         const res = await axios.get("/api/cila");
         setOrderTable(res.data);
         setPersons(res.data.persons);
+        setProcessTable(res.data.process_table);
         if (res.status === 200) {
           console.log("Data was successfully extracted");
         } else {
@@ -26,10 +27,10 @@ export const CılaProvider = ({ children }) => {
       }
     };
     getData();
-  }, []);
-
+    }, []);
+    console.log(orderTable)
   return (
-    <CılaContext.Provider value={{ orderTable, setOrderTable, persons }}>
+    <CılaContext.Provider value={{ orderTable, setOrderTable, persons,processTable }}>
       {children}
     </CılaContext.Provider>
   );
