@@ -27,6 +27,7 @@ function Form() {
       }
     };
     getPersons();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // filtered persons with search ınput
