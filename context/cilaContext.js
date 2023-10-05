@@ -20,9 +20,8 @@ export const CılaProvider = ({ children }) => {
   const [selectedOrder,setSelectedOrder] = useState(null)
   // Giriş yapan kullanıcını bılgılerını tuttugumuz state
   const [loggedInUser, setLoggedInUser] = useState([]);
+
   
-  //
-  console.log(selectedOrder)
   // date
   const date= new Date();
   const dateString = date.toLocaleString()
@@ -35,6 +34,7 @@ export const CılaProvider = ({ children }) => {
         setPersons(res.data.persons);
         setProcessTable(res.data.process_table);
         setCilaWorkTable(res.data.cila_work_table);
+        setStopReason(res.data.stop_reason)
         if (res.status === 200) {
           console.log("Data was successfully extracted");
         } else {
@@ -61,7 +61,9 @@ export const CılaProvider = ({ children }) => {
         loggedInUser,
         setLoggedInUser,
         selectedOrder,
-        setSelectedOrder
+        setSelectedOrder,
+        stopReason,
+        dateString
       }}
     >
       {children}

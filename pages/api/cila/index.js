@@ -1,6 +1,6 @@
 import pool from "@/lib/dbConntect";
 
-// cila için ilgili bütün tablolar cila contextte cekıyoruz... 
+// cila için ilgili bütün tablolar cila contextte cekıyoruz...
 const handler = async (req, res) => {
   if (req.method === "GET") {
     try {
@@ -24,12 +24,12 @@ const handler = async (req, res) => {
         process_table: process_table.rows,
         stop_reason: stop_reason.rows,
         persons: persons.rows,
-        cila_work_table:cila_work_table.rows
+        cila_work_table: cila_work_table.rows,
       });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Sunucu hatası" });
-    } // cila_work_table post ıstegı startWorkPopUp componentınden geliyor... user_id order_no work_type process_id bu componentten gelıyor.. 
+    } // cila_work_table post ıstegı startWorkPopUp componentınden geliyor... user_id order_no work_type process_id bu componentten gelıyor..
   } else if (req.method === "POST") {
     try {
       const {

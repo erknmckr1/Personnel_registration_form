@@ -7,6 +7,7 @@ import AuthPopUp from "@/components/cila_components/authPopUp";
 import { useContext } from "react";
 import { CılaContext } from "@/context/cilaContext";
 import { GridRowModes, DataGrid } from "@mui/x-data-grid";
+import { useDemoData } from '@mui/x-data-grid-generator';
 import StartWorkPopUp from "@/components/cila_components/StartWorkPopUp";
 import axios from "axios";
 import StopOrderPopUp from "@/components/cila_components/StopOrderPopUp";
@@ -21,13 +22,17 @@ function index() {
     setLoggedInUser,
     selectedOrder,
     setSelectedOrder,
+    dateString,
   } = useContext(CılaContext);
 
+  console.log(selectedOrder);
   const [time, setTime] = useState(new Date());
   // Oturum acık mı kapalı mı jwt olusturmak yerıne kapalı bır server da oldugumuz ıcın oturumu state ile yonetıyoruz.
   const [isAuth, setİsAuth] = useState(false);
   // İşe baslamak ıcın gereklı modal'ı bu state'e gore acıp kapatıyoruz.
   const [isStartWork, setIsStartWork] = useState(false);
+  // stop machine pop up ını acıp kapamak ıcın gereklı state
+  const [isStopMachine, setIsStopMachine] = useState(false);
   // singOut user refresh to isAuth & LoggedInUser
   const handleClıckOut = () => {
     if (window.confirm("Çıkıs yapmak ıstedıgınıze emın mısınız ?")) {
@@ -57,12 +62,6 @@ function index() {
     { id: 7, title: "Ramat" },
   ];
 
-  const buttonsRight = [
-    { id: 1, title: "Siparişi Durdur" },
-    { id: 2, title: "Yeniden Başlat" },
-    { id: 3, title: "Prosesi İptal Et" },
-  ];
-
   // HOUR
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -88,6 +87,17 @@ function index() {
     { field: "order_no", headerName: "Order İd", width: 100 },
   ];
 
+  // css to row
+  const customRowClass = (params) => {
+    if(params.row.stop_start_date !== ""){
+      return   'custom-stop-row' 
+    }else if (params.row.stop_start_date === ""){
+      return 'custom-active-row'
+    }
+    
+  };
+
+  // rows
   //cila_work_table'ı orderInfo.order_no ya gore fıltreleyıp gerekli verileri map ile döndük
   const workTableRow =
     cilaWorkTable.length > 0
@@ -105,6 +115,9 @@ function index() {
           }))
       : null;
 
+      const reversedWorkTableRow = workTableRow ? [...workTableRow].reverse() : null;
+
+
   const columnsTwo = [
     { field: "id", headerName: "Operator", width: 100 },
     { field: "name", headerName: "Molaya Çıkış T.", width: 100 },
@@ -121,6 +134,55 @@ function index() {
   // Boş veri
   const rows = [];
 
+  // todo Makineyi durdur işlemleri
+  const handleOpenStopMachinePopUp = () => {
+    console.log("xx");
+    if (selectedOrder && selectedOrder.stop_start_date === "") {
+      setIsStopMachine(true);
+    }
+  };
+
+  //todo duran makineyi tekrardan baslatma işlemleri
+  console.log(cilaWorkTable[cilaWorkTable.length -1])
+  const handleStartToMacgineAgain = async () => {
+    if (selectedOrder && selectedOrder.stop_start_date !== "") {
+      try {
+        const resData = {
+          cancel_date: cilaWorkTable[cilaWorkTable.length - 1].cancel_date,
+          cancel_reason_id:
+            cilaWorkTable[cilaWorkTable.length - 1].cancel_reason_id,
+          cancel_user_id_dec:
+            cilaWorkTable[cilaWorkTable.length - 1].cancel_user_id_dec,
+          order_no: cilaWorkTable[cilaWorkTable.length - 1].order_no,
+          process_id: cilaWorkTable[cilaWorkTable.length - 1].process_id,
+          produced_amount:
+            cilaWorkTable[cilaWorkTable.length - 1].produced_amount,
+          stop_end_date: dateString,
+          stop_reason_id: "",
+          stop_start_date: "",
+          stop_user_id_dec: loggedInUser.id_dec,
+          user_id_dec: cilaWorkTable[cilaWorkTable.length - 1].user_id_dec,
+          work_end_date: cilaWorkTable[cilaWorkTable.length - 1].work_end_date,
+          work_start_date:
+            cilaWorkTable[cilaWorkTable.length - 1].work_start_date,
+          work_type: cilaWorkTable[cilaWorkTable.length - 1].work_type,
+        }; 
+        const res = await axios.post("/api/cila/", resData);
+        if (res.status === 200) {
+          toast.success("Sipariş yeniden başlatıldı.");
+        }
+      } catch (err) {
+        console.log(err)
+        toast.error("Sipariş tekrardan baslatılamadı.");
+      }
+    }
+  };
+
+  const buttonsRight = [
+    { id: 1, title: "Siparişi Durdur", onClick: handleOpenStopMachinePopUp },
+    { id: 2, title: "Yeniden Başlat", onClick: handleStartToMacgineAgain },
+    { id: 3, title: "Prosesi İptal Et" },
+  ];
   return (
     <div className="w-screen h-screen ">
       <div className="w-full h-full flex">
@@ -163,7 +225,7 @@ function index() {
           {/* right side  */}
           <div className="w-full h-full">
             {/* iş tanımları */}
-            <div className="w-full h-[50%] bg-green-300 p-2">
+            <div className="w-full h-[50%]  p-2">
               {/* right side sipariş no vs. */}
               <div className="w-full h-[30%] flex gap-x-6 border-1-black-500 border">
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
@@ -252,13 +314,13 @@ function index() {
               </div>
             </div>
             {/* grid area */}
-            <div className="w-full h-[50%] bg-yellow-300">
+            <div className="w-full h-[50%]">
               {/* grid 1  */}
               <div className="h-[240px]  w-full  flex">
                 <DataGrid
                   rows={
-                    workTableRow && workTableRow.length > 0
-                      ? workTableRow
+                    reversedWorkTableRow && reversedWorkTableRow.length > 0
+                      ? reversedWorkTableRow
                       : rows
                   }
                   columns={columns}
@@ -269,16 +331,36 @@ function index() {
                       (item, index) => item.order_no === params.row.order_no
                     );
                     setSelectedOrder({ selectRow, ...params.row });
+                    console.log(params.row)
                   }}
+
+                  getRowClassName={customRowClass}
                 />
               </div>
               {/* buttons */}
               <div className="h-[15%] w-full flex justify-evenly items-center">
-               {selectedOrder === null ? <span className="font-semibold text-xl text-red-500">İş Seçiniz...</span> : buttonsRight.map((btn) => (
-                  // eslint-disable-next-line react/jsx-key
-                  //Prosesi ıptal et butonunu gereklı kosullarda goster. Notıon ad detaylı acıklaması var.
-                  <CustomButton showButton={btn.id !== 3 && btn.id !==2 && btn.id !==1 || (selectedOrder === null || selectedOrder.stop_start_date !== "" ? false : true ) } key={btn.id} title={btn.title} />
-                ))}
+                {selectedOrder === null ? (
+                  <span className="font-semibold text-xl text-red-500">
+                    İş Seçiniz...
+                  </span>
+                ) : (
+                  buttonsRight.map((btn) => (
+                    // eslint-disable-next-line react/jsx-key
+                    //Prosesi ıptal et butonunu gereklı kosullarda goster. Notıon ad detaylı acıklaması var.
+                    <CustomButton
+                      onClick={btn.onClick}
+                      showButton={
+                        (btn.id !== 3 && btn.id !== 1) ||
+                        (selectedOrder === null ||
+                        selectedOrder.stop_start_date !== ""
+                          ? false
+                          : true)
+                      }
+                      key={btn.id}
+                      title={btn.title}
+                    />
+                  ))
+                )}
               </div>
               {/* grid-2 grid-3 */}
               <div className="h-[30%] w-full flex gap-x-2 ">
@@ -323,12 +405,13 @@ function index() {
               loggedInUser={loggedInUser}
             />
           ) : null}
+          {isStopMachine === true ? (
+            <StopOrderPopUp setIsStopMachine={setIsStopMachine} />
+          ) : null}
         </div>
 
         {/* screen 2  */}
-        <div className="w-1/2 h-full bg-blue-500 relative">
-          <StopOrderPopUp/>
-        </div>
+        <div className="w-1/2 h-full bg-blue-500 relative"></div>
       </div>
     </div>
   );
