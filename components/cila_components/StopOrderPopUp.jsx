@@ -58,7 +58,7 @@ function StopOrderPopUp(props) {
       }
     } catch (err) {
       console.log(err);
-      toast.success("Makine durdurulamadı tekrar deneyin.");
+      toast.error("Makine durdurulamadı tekrar deneyin.");
     }
   };
 

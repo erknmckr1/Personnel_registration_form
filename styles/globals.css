@@ -38,3 +38,11 @@ body {
 .custom-active-row{
   background-color: #EDBB99 !important; 
 }
+.custom-cancel-row{
+  background-color: #2980B9 !important; 
+}
+
+.custom-header {
+  background-color: black !important; /* Sarı arka plan rengi */
+  color: white !important; /* Metin rengi */
+}

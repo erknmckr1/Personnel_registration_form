@@ -11,6 +11,8 @@ import { useDemoData } from '@mui/x-data-grid-generator';
 import StartWorkPopUp from "@/components/cila_components/StartWorkPopUp";
 import axios from "axios";
 import StopOrderPopUp from "@/components/cila_components/StopOrderPopUp";
+import CancelOrderPopUp from "@/components/cila_components/CancelOrderPopUp";
+import { toast } from "react-toastify";
 
 function index() {
   const {
@@ -25,7 +27,7 @@ function index() {
     dateString,
   } = useContext(CılaContext);
 
-  console.log(selectedOrder);
+  console.log(selectedOrder)
   const [time, setTime] = useState(new Date());
   // Oturum acık mı kapalı mı jwt olusturmak yerıne kapalı bır server da oldugumuz ıcın oturumu state ile yonetıyoruz.
   const [isAuth, setİsAuth] = useState(false);
@@ -33,6 +35,8 @@ function index() {
   const [isStartWork, setIsStartWork] = useState(false);
   // stop machine pop up ını acıp kapamak ıcın gereklı state
   const [isStopMachine, setIsStopMachine] = useState(false);
+  // Sipariş iptal pop up'ının true false olma durumunu tutan state
+  const [isCancelOrder,setIsCancelOrder] = useState(false)
   // singOut user refresh to isAuth & LoggedInUser
   const handleClıckOut = () => {
     if (window.confirm("Çıkıs yapmak ıstedıgınıze emın mısınız ?")) {
@@ -43,8 +47,6 @@ function index() {
     }
   };
 
-  //Eğer work_table dakı son kayıtın start_end_date'i girilmiş değilse yani iş bitmiş değilse son kayıtta ki siğariş no yu order_table da ara ve sayfadakı ılgılı yerlere yerlestır
-  const lastLogInWorkTable = cilaWorkTable[cilaWorkTable.length - 1];
 
   // open to start work pop up
   const handleOpenStartWork = () => {
@@ -78,24 +80,31 @@ function index() {
   // actıve yada durdurulmus order tablosundaki secılı order'ı tutacak state...
 
   const columns = [
-    { field: "process_id", headerName: "İşlem Adı", width: 100 },
-    { field: "work_start_date", headerName: "Başlangıç", width: 150 },
-    { field: "stop_start_date", headerName: "Stop", width: 150 },
-    { field: "work_end_date", headerName: "Bitiş", width: 150 },
-    { field: "produced_amount", headerName: "İşlenen Miktar", width: 100 },
-    { field: "work_type", headerName: "İş Tipi", width: 100 },
-    { field: "order_no", headerName: "Order İd", width: 100 },
+    { field: "process_id", headerName: "İşlem Adı", width: 100, headerClassName: 'custom-header', },
+    { field: "work_start_date", headerName: "Başlangıç", width: 150, headerClassName: 'custom-header', },
+    { field: "stop_start_date", headerName: "Stop", width: 150, headerClassName: 'custom-header', },
+    { field: "work_end_date", headerName: "Bitiş", width: 150,headerClassName: 'custom-header' },
+    { field: "produced_amount", headerName: "İşlenen Miktar", width: 100,headerClassName: 'custom-header' },
+    { field: "work_type", headerName: "İş Tipi", width: 100,headerClassName: 'custom-header' },
+    { field: "order_no", headerName: "Order İd", width: 100,headerClassName: 'custom-header' },
   ];
 
+  console.log(selectedOrder)
   // css to row
   const customRowClass = (params) => {
-    if(params.row.stop_start_date !== ""){
-      return   'custom-stop-row' 
-    }else if (params.row.stop_start_date === ""){
-      return 'custom-active-row'
+    if (params.row.stop_start_date !== "" && params.row.cancel_date === "") {
+      return 'custom-stop-row';
+    } else if (params.row.stop_start_date === "" && params.row.cancel_date === "") {
+      return 'custom-active-row';
+    } else if (params.row.cancel_date !== "") {
+      return 'custom-cancel-row';
+    } else {
+      // Diğer tüm durumlar için varsayılan stil
+      return '';
     }
-    
   };
+  
+  
 
   // rows
   //cila_work_table'ı orderInfo.order_no ya gore fıltreleyıp gerekli verileri map ile döndük
@@ -111,6 +120,7 @@ function index() {
             produced_amount: item.produced_amount,
             work_type: item.work_type,
             order_no: item.order_no,
+            cancel_date:item.cancel_date,
             id: index,
           }))
       : null;
@@ -119,36 +129,30 @@ function index() {
 
 
   const columnsTwo = [
-    { field: "id", headerName: "Operator", width: 100 },
-    { field: "name", headerName: "Molaya Çıkış T.", width: 100 },
+    { field: "id", headerName: "Operator", width: 100,headerClassName: 'custom-header' },
+    { field: "name", headerName: "Molaya Çıkış T.", width: 100,headerClassName: 'custom-header' },
   ];
-
-  // Siparişi durdur.. update to cila_work_table
-  const handleStopWork = async (req, res) => {
-    try {
-      const res = await axios.put("");
-    } catch (err) {
-      console.log(err);
-    }
-  };
   // Boş veri
   const rows = [];
 
   // todo Makineyi durdur işlemleri
   const handleOpenStopMachinePopUp = () => {
-    console.log("xx");
     if (selectedOrder && selectedOrder.stop_start_date === "") {
       setIsStopMachine(true);
     }
   };
 
+  // todo Proses iptal işlemleri
+  const handleOpenCancelOrderPopUp = () => {
+    setIsCancelOrder(true)
+  }
+
   //todo duran makineyi tekrardan baslatma işlemleri
-  console.log(cilaWorkTable[cilaWorkTable.length -1])
   const handleStartToMacgineAgain = async () => {
-    if (selectedOrder && selectedOrder.stop_start_date !== "") {
+    if (selectedOrder && (selectedOrder.stop_start_date !== "" || selectedOrder.cancel_date !== "")) {
       try {
         const resData = {
-          cancel_date: cilaWorkTable[cilaWorkTable.length - 1].cancel_date,
+          cancel_date: "",
           cancel_reason_id:
             cilaWorkTable[cilaWorkTable.length - 1].cancel_reason_id,
           cancel_user_id_dec:
@@ -181,7 +185,7 @@ function index() {
   const buttonsRight = [
     { id: 1, title: "Siparişi Durdur", onClick: handleOpenStopMachinePopUp },
     { id: 2, title: "Yeniden Başlat", onClick: handleStartToMacgineAgain },
-    { id: 3, title: "Prosesi İptal Et" },
+    { id: 3, title: "Prosesi İptal Et", onClick:handleOpenCancelOrderPopUp }
   ];
   return (
     <div className="w-screen h-screen ">
@@ -232,7 +236,7 @@ function index() {
                   <span className="text-[25px] font-semibold">Sipariş No</span>
                   <span className="text-[18px]">
                     {selectedOrder !== null
-                      ? selectedOrder.selectRow[0].order_no
+                      ? selectedOrder.order_no
                       : ""}
                   </span>
                 </div>
@@ -240,7 +244,7 @@ function index() {
                   <span className="text-[25px] font-semibold">Malzeme No</span>
                   <span className="text-[18px]">
                     {selectedOrder !== null
-                      ? selectedOrder.selectRow[0].metarial_no
+                      ? selectedOrder.metarial_no
                       : ""}
                   </span>
                 </div>
@@ -248,7 +252,7 @@ function index() {
                   <span className="text-[25px] font-semibold">Ayar/Renk</span>
                   <span className="text-[18px]">
                     {selectedOrder !== null
-                      ? selectedOrder.selectRow[0].carat
+                      ? selectedOrder.carat
                       : ""}
                   </span>
                 </div>
@@ -330,11 +334,12 @@ function index() {
                     const selectRow = orderTable.filter(
                       (item, index) => item.order_no === params.row.order_no
                     );
-                    setSelectedOrder({ selectRow, ...params.row });
-                    console.log(params.row)
+                   // setSelectedOrder({ selectRow, ...params.row });
+                    
                   }}
 
                   getRowClassName={customRowClass}
+                  headerClassName="custom-header"
                 />
               </div>
               {/* buttons */}
@@ -352,7 +357,8 @@ function index() {
                       showButton={
                         (btn.id !== 3 && btn.id !== 1) ||
                         (selectedOrder === null ||
-                        selectedOrder.stop_start_date !== ""
+                        selectedOrder.stop_start_date !== "" ||
+                        selectedOrder.cancel_date_date !== ""
                           ? false
                           : true)
                       }
@@ -408,10 +414,14 @@ function index() {
           {isStopMachine === true ? (
             <StopOrderPopUp setIsStopMachine={setIsStopMachine} />
           ) : null}
+          {isCancelOrder === true ? (
+            <CancelOrderPopUp setIsCancelOrder={setIsCancelOrder} />
+          ) : null}
         </div>
 
         {/* screen 2  */}
-        <div className="w-1/2 h-full bg-blue-500 relative"></div>
+        <div className="w-1/2 h-full bg-blue-500 relative">
+        </div>
       </div>
     </div>
   );

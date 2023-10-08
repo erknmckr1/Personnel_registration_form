@@ -20,8 +20,8 @@ export const CılaProvider = ({ children }) => {
   const [selectedOrder,setSelectedOrder] = useState(null)
   // Giriş yapan kullanıcını bılgılerını tuttugumuz state
   const [loggedInUser, setLoggedInUser] = useState([]);
-
-  
+  //cila_work_table'daki son işlem
+  const [lastProcess,setLastProcess] = useState(null)
   // date
   const date= new Date();
   const dateString = date.toLocaleString()
@@ -30,11 +30,16 @@ export const CılaProvider = ({ children }) => {
     const getData = async () => {
       try {
         const res = await axios.get("/api/cila");
+        setCancelReason(res.data.cancel_reason);
         setOrderTable(res.data.order_table);
         setPersons(res.data.persons);
         setProcessTable(res.data.process_table);
         setCilaWorkTable(res.data.cila_work_table);
         setStopReason(res.data.stop_reason)
+        // Burası problem order no secmemiz gerekseydi direkt cila_work_table dizisindeki son elemanı alamazdık
+        // Cila ekranına özgü sadece son eleman ıle işimiz oldugu ıcın son elemanı dırekt secılı hale getırıyoruz.
+        
+        setLastProcess(res.data.cila_work_table[res.data.cila_work_table.length -1])
         if (res.status === 200) {
           console.log("Data was successfully extracted");
         } else {
@@ -47,6 +52,22 @@ export const CılaProvider = ({ children }) => {
     getData();
   }, []);
 
+  // griddeki son işlemi selectedOrder state'ınde tutacagız. Eğer işlem bıtmedısye...
+  
+  useEffect(() => {
+    const selectLastProcess = async () => {
+      const filteredOrder = orderTable && orderTable.filter((item, index) => item.order_no === lastProcess.order_no);
+      const selectOrder = orderTable && lastProcess ? { ...filteredOrder[0], ...lastProcess } : null;
+  
+      if (selectOrder && selectOrder.work_end_date === "") {
+        setSelectedOrder(selectOrder);
+      }
+    };
+  
+    selectLastProcess();
+  }, [orderTable, lastProcess]);
+  
+  
   return (
     <CılaContext.Provider
       value={{
@@ -63,7 +84,8 @@ export const CılaProvider = ({ children }) => {
         selectedOrder,
         setSelectedOrder,
         stopReason,
-        dateString
+        dateString,
+        cancelReason
       }}
     >
       {children}
