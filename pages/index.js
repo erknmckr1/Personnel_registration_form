@@ -15,8 +15,8 @@ function index() {
   };
   return (
     <div>
-    <CustomButton onClick={handleCilaClick} title="Cila"/>
-    <CustomButton onClick={handleOperatorClick} title="Operator Edit"/>
+    <CustomButton showButton={true} onClick={handleCilaClick} title="Cila"/>
+    <CustomButton showButton={true} onClick={handleOperatorClick} title="Operator Edit"/>
     </div>
   )
 }

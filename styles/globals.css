@@ -41,6 +41,9 @@ body {
 .custom-cancel-row{
   background-color: #2980B9 !important; 
 }
+.custom-finish-row{
+  background-color: #D1F2EB !important;
+}
 
 .custom-header {
   background-color: black !important; /* Sarı arka plan rengi */

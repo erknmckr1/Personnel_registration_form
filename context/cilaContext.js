@@ -38,8 +38,8 @@ export const CılaProvider = ({ children }) => {
         setStopReason(res.data.stop_reason)
         // Burası problem order no secmemiz gerekseydi direkt cila_work_table dizisindeki son elemanı alamazdık
         // Cila ekranına özgü sadece son eleman ıle işimiz oldugu ıcın son elemanı dırekt secılı hale getırıyoruz.
-        
         setLastProcess(res.data.cila_work_table[res.data.cila_work_table.length -1])
+
         if (res.status === 200) {
           console.log("Data was successfully extracted");
         } else {
@@ -56,7 +56,7 @@ export const CılaProvider = ({ children }) => {
   
   useEffect(() => {
     const selectLastProcess = async () => {
-      const filteredOrder = orderTable && orderTable.filter((item, index) => item.order_no === lastProcess.order_no);
+      const filteredOrder = lastProcess && orderTable && orderTable.filter((item, index) => item.order_no === lastProcess.order_no);
       const selectOrder = orderTable && lastProcess ? { ...filteredOrder[0], ...lastProcess } : null;
   
       if (selectOrder && selectOrder.work_end_date === "") {
@@ -67,7 +67,7 @@ export const CılaProvider = ({ children }) => {
     selectLastProcess();
   }, [orderTable, lastProcess]);
   
-  
+  console.log(selectedOrder)
   return (
     <CılaContext.Provider
       value={{
@@ -85,7 +85,8 @@ export const CılaProvider = ({ children }) => {
         setSelectedOrder,
         stopReason,
         dateString,
-        cancelReason
+        cancelReason,
+        lastProcess
       }}
     >
       {children}

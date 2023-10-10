@@ -15,7 +15,7 @@ function CancelOrderPopUp(props) {
   console.log(selectedCancelReason);
 
   const handleCancelOrder = async () => {
-    if (selectedCancelReason!==null) {
+    if (selectedCancelReason!==null && window.confirm('Prosesi İptal etmek istediğinize emin misiniz ?')) {
       try {
         const resData = {
           cancel_date: dateString,
@@ -23,22 +23,24 @@ function CancelOrderPopUp(props) {
           cancel_user_id_dec: loggedInUser.id_dec,
           order_no: cilaWorkTable[cilaWorkTable.length - 1].order_no,
           process_id: cilaWorkTable[cilaWorkTable.length - 1].process_id,
-          produced_amount:
-            cilaWorkTable[cilaWorkTable.length - 1].produced_amount,
+          produced_amount:"",
           stop_end_date:"",
           stop_reason_id: "",
           stop_start_date: "",
           stop_user_id_dec: "",
           user_id_dec: cilaWorkTable[cilaWorkTable.length - 1].user_id_dec,
-          work_end_date: cilaWorkTable[cilaWorkTable.length - 1].work_end_date,
+          work_end_date:"",
           work_start_date:
             cilaWorkTable[cilaWorkTable.length - 1].work_start_date,
           work_type: cilaWorkTable[cilaWorkTable.length - 1].work_type,
+          order_status: "3",
+          finisher_user_id: "",
         };
         console.log(resData)
-        const res = await axios.post("/api/cila/", resData);
+        const res = await axios.put("/api/cila/", resData);
         if (res.status === 200) {
           toast.success("Makine başarı ile durduruldu.");
+          setIsCancelOrder(false)
         }
       } catch (err) {
         console.log(err);

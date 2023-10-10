@@ -12,7 +12,7 @@ function StartWorkPopUp(props) {
   const { processTable, orderInfo, setOrderInfo } = useContext(CılaContext);
   // Giriş yapan kullanıcı
   const { loggedInUser, setIsStartWork } = props;
-  console.log(loggedInUser);
+
   // İş tipini tutacak state
   const [btnStatus, setBtnStatus] = useState("");
   // seçili proses bılgılerını tutacak state
@@ -23,7 +23,6 @@ function StartWorkPopUp(props) {
     { id: 2, title: "Tamir" },
     { id: 3, title: "Numune" },
   ];
-  console.log(selectedProcess);
   // Order no yu tutacak state
   const [orderNo, setOrderNo] = useState("");
 
@@ -74,6 +73,8 @@ function StartWorkPopUp(props) {
     cancel_reason_id: "",
     cancel_date: "",
     produced_amount: "",
+    order_status:"1",
+    finisher_user_id:""
   };
 
   // cila_work_table için insert işlemi...

@@ -12,47 +12,28 @@ function StopOrderPopUp(props) {
   const { stopReason, cilaWorkTable, dateString, loggedInUser } =
     useContext(CılaContext);
   const [selectedStopReason, setSelectedStopReason] = useState(null);
-  console.log(stopReason);
-  // const {
-  //   cancel_date,
-  //   cancel_reason_id,
-  //   cancel_user_id_dec,
-  //   order_no,
-  //   process_id,
-  //   produced_amount,
-  //   stop_end_date,
-  //   stop_reason_id,
-  //   stop_start_date,
-  //   stop_user_id_dec,
-  //   user_id_dec,
-  //   work_end_date,
-  //   work_start_date,
-  //   work_type,
-  // } = cilaWorkTable;
 
   const handleStop = async () => {
     try {
       const resData = {
-        cancel_date: cilaWorkTable[cilaWorkTable.length - 1].cancel_date,
-        cancel_reason_id:
-          cilaWorkTable[cilaWorkTable.length - 1].cancel_reason_id,
-        cancel_user_id_dec:
-          cilaWorkTable[cilaWorkTable.length - 1].cancel_user_id_dec,
+        cancel_date:"",
+        cancel_reason_id:"",
+        cancel_user_id_dec:"",
         order_no: cilaWorkTable[cilaWorkTable.length - 1].order_no,
         process_id: cilaWorkTable[cilaWorkTable.length - 1].process_id,
-        produced_amount:
-          cilaWorkTable[cilaWorkTable.length - 1].produced_amount,
-        stop_end_date: cilaWorkTable[cilaWorkTable.length - 1].stop_end_date,
+        produced_amount:"",
+        stop_end_date: "",
         stop_reason_id: selectedStopReason.stop_reason_id,
         stop_start_date: dateString,
         stop_user_id_dec: loggedInUser.id_dec,
         user_id_dec: cilaWorkTable[cilaWorkTable.length - 1].user_id_dec,
-        work_end_date: cilaWorkTable[cilaWorkTable.length - 1].work_end_date,
-        work_start_date:
-          cilaWorkTable[cilaWorkTable.length - 1].work_start_date,
+        work_end_date: "",
+        work_start_date:cilaWorkTable[cilaWorkTable.length - 1].work_start_date,
         work_type: cilaWorkTable[cilaWorkTable.length - 1].work_type,
+        order_status:"2",
+        finisher_user_id:""
       };
-      const res = await axios.post("/api/cila/", resData);
+      const res = await axios.put("/api/cila/", resData);
       if (res.status === 200) {
         toast.success("Makine başarı ile durduruldu.");
       }

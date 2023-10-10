@@ -7,13 +7,12 @@ import AuthPopUp from "@/components/cila_components/authPopUp";
 import { useContext } from "react";
 import { CılaContext } from "@/context/cilaContext";
 import { GridRowModes, DataGrid } from "@mui/x-data-grid";
-import { useDemoData } from '@mui/x-data-grid-generator';
 import StartWorkPopUp from "@/components/cila_components/StartWorkPopUp";
 import axios from "axios";
 import StopOrderPopUp from "@/components/cila_components/StopOrderPopUp";
 import CancelOrderPopUp from "@/components/cila_components/CancelOrderPopUp";
 import { toast } from "react-toastify";
-
+import WorkEndPopUp from "@/components/cila_components/WorkEndPopUp";
 function index() {
   const {
     persons,
@@ -26,8 +25,6 @@ function index() {
     setSelectedOrder,
     dateString,
   } = useContext(CılaContext);
-
-  console.log(selectedOrder)
   const [time, setTime] = useState(new Date());
   // Oturum acık mı kapalı mı jwt olusturmak yerıne kapalı bır server da oldugumuz ıcın oturumu state ile yonetıyoruz.
   const [isAuth, setİsAuth] = useState(false);
@@ -36,7 +33,9 @@ function index() {
   // stop machine pop up ını acıp kapamak ıcın gereklı state
   const [isStopMachine, setIsStopMachine] = useState(false);
   // Sipariş iptal pop up'ının true false olma durumunu tutan state
-  const [isCancelOrder,setIsCancelOrder] = useState(false)
+  const [isCancelOrder, setIsCancelOrder] = useState(false);
+  // işi bitirme sayfaasının acılıp kapanmasını tutacak state
+  const [isEndWwork, setIsEndWork] = useState(false);
   // singOut user refresh to isAuth & LoggedInUser
   const handleClıckOut = () => {
     if (window.confirm("Çıkıs yapmak ıstedıgınıze emın mısınız ?")) {
@@ -47,21 +46,43 @@ function index() {
     }
   };
 
-
   // open to start work pop up
   const handleOpenStartWork = () => {
     setIsStartWork(true);
   };
 
+  const handleIsEndWork = () =>{
+    setIsEndWork(true)
+  }
+
   const buttons = [
-    { id: 0, title: "Çıkış Yap", onClick: handleClıckOut },
-    { id: 1, title: "İşe Başla", onClick: handleOpenStartWork },
-    { id: 2, title: "Yemek Molası" },
-    { id: 3, title: "Özel Ara" },
-    { id: 4, title: "Yemek Menüsü" },
-    { id: 5, title: "İzin Girişi" },
-    { id: 6, title: "Duyurular" },
-    { id: 7, title: "Ramat" },
+    { id: 0, title: "Çıkış Yap", onClick: handleClıckOut, showButton: true },
+    {
+      id: 1,
+      title: "İşe Başla",
+      onClick: handleOpenStartWork,
+      showButton:
+        selectedOrder === null ||
+        (selectedOrder &&
+          (selectedOrder.cancel_date !== "" ||
+            selectedOrder.work_end_date !== "")),
+    },
+    {
+      id: 2,
+      title: "İşi Bitir",
+      showButton:
+        selectedOrder &&
+        selectedOrder.cancel_date === "" &&
+        selectedOrder.work_end_date === "",
+        onClick:handleIsEndWork
+    },
+
+    { id: 3, title: "Yemek Molası", showButton: true },
+    { id: 4, title: "Özel Ara", showButton: true },
+    { id: 5, title: "Yemek Menüsü", showButton: true },
+    { id: 6, title: "İzin Girişi", showButton: true },
+    { id: 7, title: "Duyurular", showButton: true },
+    { id: 8, title: "Ramat", showButton: true },
   ];
 
   // HOUR
@@ -80,38 +101,72 @@ function index() {
   // actıve yada durdurulmus order tablosundaki secılı order'ı tutacak state...
 
   const columns = [
-    { field: "process_id", headerName: "İşlem Adı", width: 100, headerClassName: 'custom-header', },
-    { field: "work_start_date", headerName: "Başlangıç", width: 150, headerClassName: 'custom-header', },
-    { field: "stop_start_date", headerName: "Stop", width: 150, headerClassName: 'custom-header', },
-    { field: "work_end_date", headerName: "Bitiş", width: 150,headerClassName: 'custom-header' },
-    { field: "produced_amount", headerName: "İşlenen Miktar", width: 100,headerClassName: 'custom-header' },
-    { field: "work_type", headerName: "İş Tipi", width: 100,headerClassName: 'custom-header' },
-    { field: "order_no", headerName: "Order İd", width: 100,headerClassName: 'custom-header' },
+    {
+      field: "process_id",
+      headerName: "İşlem Adı",
+      width: 100,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "work_start_date",
+      headerName: "Başlangıç",
+      width: 150,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "stop_start_date",
+      headerName: "Stop",
+      width: 150,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "work_end_date",
+      headerName: "Bitiş",
+      width: 150,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "produced_amount",
+      headerName: "İşlenen Miktar",
+      width: 100,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "work_type",
+      headerName: "İş Tipi",
+      width: 100,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "order_no",
+      headerName: "Order İd",
+      width: 100,
+      headerClassName: "custom-header",
+    },
   ];
 
-  console.log(selectedOrder)
   // css to row
   const customRowClass = (params) => {
     if (params.row.stop_start_date !== "" && params.row.cancel_date === "") {
-      return 'custom-stop-row';
-    } else if (params.row.stop_start_date === "" && params.row.cancel_date === "") {
-      return 'custom-active-row';
+      return "custom-stop-row";
+    } else if (
+      params.row.stop_start_date === "" &&
+      params.row.cancel_date === ""
+    ) {
+      return "custom-active-row";
     } else if (params.row.cancel_date !== "") {
-      return 'custom-cancel-row';
-    } else {
-      // Diğer tüm durumlar için varsayılan stil
-      return '';
+      return "custom-cancel-row";
+    } else if (params.row.order_status === "4") {
+      return "custom-finish-row";
     }
   };
-  
-  
 
   // rows
   //cila_work_table'ı orderInfo.order_no ya gore fıltreleyıp gerekli verileri map ile döndük
   const workTableRow =
     cilaWorkTable.length > 0
       ? cilaWorkTable
-          // .filter((item) => item.user_id_dec === loggedInUser.id_dec)
+          .filter((item) => item.order_status !== "4" && item.order_status !== "3")
           .map((item, index) => ({
             process_id: item.process_id,
             work_start_date: item.work_start_date,
@@ -120,17 +175,28 @@ function index() {
             produced_amount: item.produced_amount,
             work_type: item.work_type,
             order_no: item.order_no,
-            cancel_date:item.cancel_date,
+            cancel_date: item.cancel_date,
             id: index,
           }))
       : null;
 
-      const reversedWorkTableRow = workTableRow ? [...workTableRow].reverse() : null;
-
+  const reversedWorkTableRow = workTableRow
+    ? [...workTableRow].reverse()
+    : null;
 
   const columnsTwo = [
-    { field: "id", headerName: "Operator", width: 100,headerClassName: 'custom-header' },
-    { field: "name", headerName: "Molaya Çıkış T.", width: 100,headerClassName: 'custom-header' },
+    {
+      field: "id",
+      headerName: "Operator",
+      width: 200,
+      headerClassName: "custom-header",
+    },
+    {
+      field: "name",
+      headerName: "Molaya Çıkış T.",
+      width: 200,
+      headerClassName: "custom-header",
+    },
   ];
   // Boş veri
   const rows = [];
@@ -144,48 +210,66 @@ function index() {
 
   // todo Proses iptal işlemleri
   const handleOpenCancelOrderPopUp = () => {
-    setIsCancelOrder(true)
-  }
+    setIsCancelOrder(true);
+  };
 
   //todo duran makineyi tekrardan baslatma işlemleri
   const handleStartToMacgineAgain = async () => {
-    if (selectedOrder && (selectedOrder.stop_start_date !== "" || selectedOrder.cancel_date !== "")) {
+    if (
+      selectedOrder &&
+      selectedOrder.order_status === "2" &&
+      window.confirm("Prosesi yenıden baslatmak ıstediğinize emin misiniz ?")
+    ) {
       try {
         const resData = {
           cancel_date: "",
-          cancel_reason_id:
-            cilaWorkTable[cilaWorkTable.length - 1].cancel_reason_id,
-          cancel_user_id_dec:
-            cilaWorkTable[cilaWorkTable.length - 1].cancel_user_id_dec,
+          cancel_reason_id: "",
+          cancel_user_id_dec: "",
           order_no: cilaWorkTable[cilaWorkTable.length - 1].order_no,
           process_id: cilaWorkTable[cilaWorkTable.length - 1].process_id,
-          produced_amount:
-            cilaWorkTable[cilaWorkTable.length - 1].produced_amount,
+          produced_amount: "",
           stop_end_date: dateString,
           stop_reason_id: "",
           stop_start_date: "",
-          stop_user_id_dec: loggedInUser.id_dec,
+          stop_user_id_dec: "",
           user_id_dec: cilaWorkTable[cilaWorkTable.length - 1].user_id_dec,
-          work_end_date: cilaWorkTable[cilaWorkTable.length - 1].work_end_date,
+          work_end_date: "",
           work_start_date:
             cilaWorkTable[cilaWorkTable.length - 1].work_start_date,
           work_type: cilaWorkTable[cilaWorkTable.length - 1].work_type,
-        }; 
-        const res = await axios.post("/api/cila/", resData);
+          order_status: "1",
+          finisher_user_id: "",
+        };
+        const res = await axios.put("/api/cila/", resData);
         if (res.status === 200) {
           toast.success("Sipariş yeniden başlatıldı.");
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
         toast.error("Sipariş tekrardan baslatılamadı.");
       }
     }
   };
 
   const buttonsRight = [
-    { id: 1, title: "Siparişi Durdur", onClick: handleOpenStopMachinePopUp },
-    { id: 2, title: "Yeniden Başlat", onClick: handleStartToMacgineAgain },
-    { id: 3, title: "Prosesi İptal Et", onClick:handleOpenCancelOrderPopUp }
+    {
+      id: 1,
+      title: "Siparişi Durdur",
+      onClick: handleOpenStopMachinePopUp,
+      showButton: selectedOrder && selectedOrder.order_status === "1",
+    },
+    {
+      id: 2,
+      title: "Yeniden Başlat",
+      onClick: handleStartToMacgineAgain,
+      showButton: selectedOrder && selectedOrder.order_status === "2",
+    },
+    {
+      id: 3,
+      title: "Prosesi İptal Et",
+      onClick: handleOpenCancelOrderPopUp,
+      showButton: selectedOrder && selectedOrder.order_status !== "3",
+    },
   ];
   return (
     <div className="w-screen h-screen ">
@@ -217,7 +301,7 @@ function index() {
                   onClick={button.onClick}
                   key={button.id}
                   title={button.title}
-                  showButton={true}
+                  showButton={button.showButton}
                 />
               ))}
             </div>
@@ -235,25 +319,19 @@ function index() {
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Sipariş No</span>
                   <span className="text-[18px]">
-                    {selectedOrder !== null
-                      ? selectedOrder.order_no
-                      : ""}
+                    {selectedOrder !== null ? selectedOrder.order_no : ""}
                   </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Malzeme No</span>
                   <span className="text-[18px]">
-                    {selectedOrder !== null
-                      ? selectedOrder.metarial_no
-                      : ""}
+                    {selectedOrder !== null ? selectedOrder.metarial_no : ""}
                   </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Ayar/Renk</span>
                   <span className="text-[18px]">
-                    {selectedOrder !== null
-                      ? selectedOrder.carat
-                      : ""}
+                    {selectedOrder !== null ? selectedOrder.carat : ""}
                   </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
@@ -265,15 +343,17 @@ function index() {
               <div className="w-full h-[50%] flex flex-col px-1 border border-1">
                 <div className=" w-full max-h-full flex">
                   <div className="h-full w-[50%] flex gap-x-2">
-                    <div className="w-full h-full flex flex-col  gap-y-1 px-3">
+                    <div className="w-full h-full flex border-r border-1 items-center flex-col  gap-y-1 px-3">
                       <span className="text-[25px] font-semibold">
                         Genel Açıklama
                       </span>
-                      <span className="text-[18px]">xxxxxxx</span>
+                      <span className="text-[18px]">
+                        {selectedOrder && selectedOrder.item_description}
+                      </span>
                     </div>
                   </div>
                   <div className="h-full w-[50%] flex gap-x-2">
-                    <div className="w-full h-full flex flex-col  justify-between gap-y-1  px-3">
+                    <div className="w-full h-full flex  items-center flex-col  justify-between gap-y-1  px-3">
                       <span className="text-[25px] font-semibold">
                         Kalem Açıklaması
                       </span>
@@ -291,7 +371,9 @@ function index() {
               <div className="w-full h-[20%] flex gap-x-6 border-1-black-500 border">
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Proses Adı</span>
-                  <span className="text-[18px]">xxxxxxx</span>
+                  <span className="text-[18px]">
+                    {selectedOrder && selectedOrder.process_id}
+                  </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">
@@ -304,7 +386,9 @@ function index() {
                     Çalışma Durumu
                   </span>
                   <div className="flex flex-col">
-                    <span className="text-[18px]">xxxxxxx</span>
+                    <span className="text-[18px]">
+                      {selectedOrder && selectedOrder.work_type}
+                    </span>
                     <span>
                       {orderInfo &&
                       cilaWorkTable.length > 0 &&
@@ -334,19 +418,19 @@ function index() {
                     const selectRow = orderTable.filter(
                       (item, index) => item.order_no === params.row.order_no
                     );
-                   // setSelectedOrder({ selectRow, ...params.row });
-                    
+                    // setSelectedOrder({ selectRow, ...params.row });
                   }}
-
                   getRowClassName={customRowClass}
                   headerClassName="custom-header"
                 />
               </div>
               {/* buttons */}
               <div className="h-[15%] w-full flex justify-evenly items-center">
-                {selectedOrder === null ? (
+                {selectedOrder &&
+                (selectedOrder.work_end_date !== "" ||
+                  selectedOrder.cancel_date !== "") ? (
                   <span className="font-semibold text-xl text-red-500">
-                    İş Seçiniz...
+                    Yeni işi başlatın...
                   </span>
                 ) : (
                   buttonsRight.map((btn) => (
@@ -354,14 +438,7 @@ function index() {
                     //Prosesi ıptal et butonunu gereklı kosullarda goster. Notıon ad detaylı acıklaması var.
                     <CustomButton
                       onClick={btn.onClick}
-                      showButton={
-                        (btn.id !== 3 && btn.id !== 1) ||
-                        (selectedOrder === null ||
-                        selectedOrder.stop_start_date !== "" ||
-                        selectedOrder.cancel_date_date !== ""
-                          ? false
-                          : true)
-                      }
+                      showButton={btn.showButton}
                       key={btn.id}
                       title={btn.title}
                     />
@@ -417,11 +494,16 @@ function index() {
           {isCancelOrder === true ? (
             <CancelOrderPopUp setIsCancelOrder={setIsCancelOrder} />
           ) : null}
+          {isEndWwork === true ? (
+            <WorkEndPopUp
+              setIsEndWork={setIsEndWork}
+              loggedInUser={loggedInUser}
+            />
+          ) : null}
         </div>
 
         {/* screen 2  */}
-        <div className="w-1/2 h-full bg-blue-500 relative">
-        </div>
+        <div className="w-1/2 h-full bg-blue-500 relative"></div>
       </div>
     </div>
   );
