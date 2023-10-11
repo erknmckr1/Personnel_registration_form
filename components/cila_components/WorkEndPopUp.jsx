@@ -8,7 +8,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CustomButton from "./CustomButton";
 function WorkEndPopUp(props) {
-  const { selectedOrder, dateString } = useContext(CılaContext);
+  const { selectedOrder, dateString,setCilaWorkTable, setSelectedOrder } = useContext(CılaContext);
   const { loggedInUser, setIsEndWork } = props;
   const [gram, setGram] = useState("");
 
@@ -41,6 +41,11 @@ function WorkEndPopUp(props) {
         const res = await axios.put("/api/cila/", resData);
         if (res.status === 200) {
           toast.success("Sipariş başarı ile sonlandırıldıü.");
+          const updatedData = await axios.get("/api/cila");
+          setCilaWorkTable(updatedData.data.cila_work_table);
+          const newSelectedOrder = updatedData.data.cila_work_table[updatedData.data.cila_work_table.length -1];
+          setSelectedOrder(newSelectedOrder)
+          setIsEndWork(false)
         }
       } catch (err) {
         toast.error("Sipariş iptal edilemedi tekrar deneyin");

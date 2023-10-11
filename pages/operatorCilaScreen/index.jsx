@@ -24,6 +24,7 @@ function index() {
     selectedOrder,
     setSelectedOrder,
     dateString,
+    setCilaWorkTable,
   } = useContext(CılaContext);
   const [time, setTime] = useState(new Date());
   // Oturum acık mı kapalı mı jwt olusturmak yerıne kapalı bır server da oldugumuz ıcın oturumu state ile yonetıyoruz.
@@ -242,6 +243,10 @@ function index() {
         };
         const res = await axios.put("/api/cila/", resData);
         if (res.status === 200) {
+          const updatedData = await axios.get("/api/cila");
+          const newSelectedOrder = updatedData.data.cila_work_table[updatedData.data.cila_work_table.length -1];
+          setSelectedOrder(newSelectedOrder)
+          setCilaWorkTable(updatedData.data.cila_work_table);
           toast.success("Sipariş yeniden başlatıldı.");
         }
       } catch (err) {
@@ -250,6 +255,7 @@ function index() {
       }
     }
   };
+  console.log(selectedOrder)
 
   const buttonsRight = [
     {
@@ -319,19 +325,19 @@ function index() {
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Sipariş No</span>
                   <span className="text-[18px]">
-                    {selectedOrder !== null ? selectedOrder.order_no : ""}
+                  {selectedOrder && (selectedOrder.order_status !== "3" && selectedOrder.order_status !== "4") && orderInfo ? orderInfo.order_no : ""}
                   </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Malzeme No</span>
                   <span className="text-[18px]">
-                    {selectedOrder !== null ? selectedOrder.metarial_no : ""}
-                  </span>
+                  {selectedOrder && (selectedOrder.order_status !== "3" && selectedOrder.order_status !== "4") && orderInfo ? orderInfo.metarial_no : ""}                  </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
                   <span className="text-[25px] font-semibold">Ayar/Renk</span>
                   <span className="text-[18px]">
-                    {selectedOrder !== null ? selectedOrder.carat : ""}
+                  {selectedOrder && (selectedOrder.order_status !== "3" && selectedOrder.order_status !== "4") && orderInfo ? orderInfo.carat : ""}
+
                   </span>
                 </div>
                 <div className="w-full h-full flex flex-col items-center justify-center gap-y-4">
@@ -348,7 +354,7 @@ function index() {
                         Genel Açıklama
                       </span>
                       <span className="text-[18px]">
-                        {selectedOrder && selectedOrder.item_description}
+                      {selectedOrder && (selectedOrder.order_status !== "3" && selectedOrder.order_status !== "4") && orderInfo ? orderInfo.item_description : ""}
                       </span>
                     </div>
                   </div>
@@ -358,10 +364,7 @@ function index() {
                         Kalem Açıklaması
                       </span>
                       <span className="text-[16px]">
-                        EKSIK YADA FAZLA ISTENMIYOR. KALITE COK ONEMLIDIR.
-                        asdkaösdbgahjsdgjahsgdkhgdahgfd
-                        asdvgasgdhvashdvgahjsdhasdvhEKSIK YADA FAZLA ISTENMIYOR.
-                        KALITE COK ONEMLIDIR.
+                      {selectedOrder && (selectedOrder.order_status !== "3" && selectedOrder.order_status !== "4") && orderInfo ? orderInfo.general_description : ""}
                       </span>
                     </div>
                   </div>

@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { CılaContext } from "@/context/cilaContext";
 
 function StartWorkPopUp(props) {
-  const { processTable, orderInfo, setOrderInfo } = useContext(CılaContext);
+  const { processTable, orderInfo, setOrderInfo,setCilaWorkTable,setSelectedOrder} = useContext(CılaContext);
   // Giriş yapan kullanıcı
   const { loggedInUser, setIsStartWork } = props;
 
@@ -89,7 +89,12 @@ function StartWorkPopUp(props) {
         const res = await axios.post("/api/cila/", cila_work_table);
         if (res.status === 200) {
           toast.success("Proses başarıyla başlatıldı.");
+          const updatedData = await axios.get("/api/cila");
+          setCilaWorkTable(updatedData.data.cila_work_table);
+          const newSelectedOrder = updatedData.data.cila_work_table[updatedData.data.cila_work_table.length -1];
+          setSelectedOrder(newSelectedOrder)
           setIsStartWork(false);
+          
         }
       } else {
         toast.error("Zorunlu seçim işlemlerini yapınız.");

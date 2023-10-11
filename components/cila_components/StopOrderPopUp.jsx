@@ -9,11 +9,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 function StopOrderPopUp(props) {
   const { setIsStopMachine } = props;
-  const { stopReason, cilaWorkTable, dateString, loggedInUser } =
+  const { stopReason, cilaWorkTable, dateString, loggedInUser,setCilaWorkTable,setSelectedOrder } =
     useContext(CılaContext);
   const [selectedStopReason, setSelectedStopReason] = useState(null);
 
   const handleStop = async () => {
+   if(window.confirm("Siparişi durdurmak istediğinize emin misiniz ? ")){
     try {
       const resData = {
         cancel_date:"",
@@ -36,11 +37,17 @@ function StopOrderPopUp(props) {
       const res = await axios.put("/api/cila/", resData);
       if (res.status === 200) {
         toast.success("Makine başarı ile durduruldu.");
+        const updatedData = await axios.get("/api/cila");
+        setCilaWorkTable(updatedData.data.cila_work_table);
+        setIsStopMachine(false)
+        const newSelectedOrder = updatedData.data.cila_work_table[updatedData.data.cila_work_table.length -1];
+          setSelectedOrder(newSelectedOrder)
       }
     } catch (err) {
       console.log(err);
       toast.error("Makine durdurulamadı tekrar deneyin.");
     }
+   }
   };
 
   // StopMachine Pop Up'ını kapat.. ve ılgılı stateleri sıfırla
